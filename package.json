@@ -19,6 +19,7 @@
     "bulma": "^0.8.0",
     "next": "^9.2.1",
     "node-sass": "^4.13.1",
+    "query-string": "^6.10.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "typescript": "^3.7.5"

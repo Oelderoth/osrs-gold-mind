@@ -5,7 +5,7 @@ export interface IRawOsBuddySummaryResponse {
 export class OsBuddyPriceSummary {
     constructor(private data: IRawOsBuddySummaryResponse) { }
     getItem(id: string | number): OsBuddyItemSummary {
-        return OsBuddyItemSummary.from(this.data[id]);
+        return id ? OsBuddyItemSummary.from(this.data[id]) : null;
     }
 
     getItems(): OsBuddyItemSummary[] {

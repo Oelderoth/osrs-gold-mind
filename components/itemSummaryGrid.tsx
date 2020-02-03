@@ -1,4 +1,5 @@
 import React, { ReactElement } from 'react';
+import Link from 'next/link';
 import { OsBuddyItemSummary } from '../types/osbuddy';
 
 import '../styles.scss';
@@ -11,7 +12,7 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
     console.log(item.isUpToDate)
     return <tr key={item.id}>
         <td>{item.id}</td>
-        <td>{item.name}</td>
+        <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
         <td>{item.sell_average}</td>
         <td>{item.buy_average}</td>
         <td>{item.profit}</td>
