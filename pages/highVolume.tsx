@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { NextPage } from 'next';
 import usePriceSummary from '../hooks/usePriceSummary';
 import { OsBuddyItemSummary } from '../types/osbuddy';
@@ -10,38 +10,51 @@ function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary):
     return (itemB.buy_average - itemB.sell_average) - (itemA.buy_average - itemA.sell_average);
 }
 
+function itemRow(item: OsBuddyItemSummary): ReactElement {
+    return <tr key={item.id}>
+        <td>{item.id}</td>
+        <td>{item.name}</td>
+        <td>{item.buy_average}</td>
+        <td>{item.sell_average}</td>
+        <td>{item.buy_average - item.sell_average}</td>
+        <td>{`${((item.buy_average - item.sell_average)/item.sell_average*100).toFixed(2)}%`}</td>
+        <td>{item.buy_quantity}</td>
+        <td>{item.sell_quantity}</td>
+        <td>{(item.sell_quantity / item.buy_quantity).toFixed(2)}</td>
+    </tr>
+}
+
 const HighVolume: NextPage = function () {
     const {summary} = usePriceSummary();
+    const items = summary?.getItems()
+        ?.filter(highVolumeFilter)
+        ?.sort(profitMarginSort)
+        ?? [];
 
     return (
-        <div>
-            <h1 className="title">
-                Bulma
-            </h1>
+        <div className="section">
+            <h1 className="title">Items</h1>
+            <h2 className="subtitle">High Volume</h2>
 
-            <p className="subtitle">
-                Modern CSS framework based on <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox">Flexbox</a>
-            </p>
-
-            <div className="field">
-                <div className="control">
-                    <input className="input" type="text" placeholder="Input" />
-                </div>
-            </div>
-
-            <div className="field">
-                <p className="control">
-                <span className="select">
-                    <select>
-                    <option>Select dropdown</option>
-                    </select>
-                </span>
-                </p>
-            </div>
-
-            <div className="buttons">
-                <a className="button is-primary">Primary</a>
-                <a className="button is-link">Link</a>
+            <div className="container">
+                <table className="table is-fullwidth is-striped is-hoverable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Buy Price</th>
+                            <th>Sell Price</th>
+                            <th>Profit</th>
+                            <th>ROI</th>
+                            <th>Buy Quantity</th>
+                            <th>Sell Quantity</th>
+                            <th>Buy/Sell Ratio</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.map(itemRow)}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
