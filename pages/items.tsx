@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import usePriceSummary from '../hooks/usePriceSummary';
 import { OsBuddyItemSummary } from '../types/osbuddy';
 import {highVolumeFilter, highestMarginFilter, suggestedItemFilter} from '../filters';
+import '../styles.scss';
 
 
 function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary): number {
