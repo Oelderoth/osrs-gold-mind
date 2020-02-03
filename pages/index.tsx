@@ -6,7 +6,7 @@ const Index: NextPage = function () {
     const {summary} = usePriceSummary();
 
     return (<div>
-        {summary?.getItem(44)?.name ?? "Loading..."} <br />
+        {summary?.getItem(44)?.name} <br />
         <ul>
             {summary?.getItems().map(item => <li>{item.name}</li>)}
         </ul>
