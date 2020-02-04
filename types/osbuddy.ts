@@ -5,7 +5,7 @@ export interface IRawOsBuddySummaryResponse {
 export class OsBuddyPriceSummary {
     constructor(private data: IRawOsBuddySummaryResponse) { }
     getItem(id: string | number): OsBuddyItemSummary {
-        return OsBuddyItemSummary.from(this.data[id]);
+        return id ? OsBuddyItemSummary.from(this.data[id]) : null;
     }
 
     getItems(): OsBuddyItemSummary[] {
@@ -52,4 +52,14 @@ export class OsBuddyItemSummary {
     static from(itemSummary: OsBuddyItemSummary): OsBuddyItemSummary {
         return Object.assign(Object.create(OsBuddyItemSummary.prototype), itemSummary);
     }
+}
+
+export interface OsBuddyItemHistoryEntry {
+    ts: number;
+    overallPrice: number;
+    overallQuantity: number;
+    buyingPrice: number;
+    buyingQuantity: number;
+    sellingPrice: number;
+    sellingQuantity: number;
 }
