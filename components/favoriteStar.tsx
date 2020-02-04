@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import classNames from 'classnames';
-import ItemsContext from '../context/ItemsContext';
+import { ItemsContext } from '../context/ItemsContext';
 
 interface FavoriteStarProps {
     id: string;

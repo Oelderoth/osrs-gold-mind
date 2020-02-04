@@ -1,29 +1,14 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
-import ItemsContext from '../context/ItemsContext';
+import {ItemsContextProvider} from '../context/ItemsContext';
 
 import '../styles.scss';
 
-const favorites = new Set();
-
-
 const MyApp = ({ Component, pageProps }) => {
-    const [favorites, setFavorites] = useState(new Set());
-    const toggleFavorite = (itemId: string) => {
-        console.log(`toggling ${itemId}`)
-        if (favorites.has(itemId)) {
-            favorites.delete(itemId);
-        } else {
-            favorites.add(itemId);
-        }
-        console.log(favorites);
-        setFavorites(new Set(favorites));
-    }
-
     return (<div>
-        <ItemsContext.Provider value = {{favorites: favorites as Set<string>, toggleFavorite: toggleFavorite}}>
+        <ItemsContextProvider>
             <Component {...pageProps} />
-        </ItemsContext.Provider>
+        </ItemsContextProvider>
     </div>);
 }
 
