@@ -53,3 +53,13 @@ export class OsBuddyItemSummary {
         return Object.assign(Object.create(OsBuddyItemSummary.prototype), itemSummary);
     }
 }
+
+export interface OsBuddyItemHistoryEntry {
+    ts: number;
+    overallPrice: number;
+    overallQuantity: number;
+    buyingPrice: number;
+    buyingQuantity: number;
+    sellingPrice: number;
+    sellingQuantity: number;
+}

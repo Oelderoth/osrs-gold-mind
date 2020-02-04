@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import usePriceSummary from '../hooks/usePriceSummary';
-import { OsBuddyItemSummary } from '../types/osbuddy';
 import queryString from 'query-string';
 
 import '../styles.scss';
+import ItemHistoryChart from '../components/itemHistoryChart';
 
 function getItemId(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -16,18 +16,16 @@ function getItemId(router: NextRouter): string | undefined {
     return itemId?.toString();
 }
 
+
 const HighVolume: NextPage = function () {
-    console.log('render');
     const { summary } = usePriceSummary();
     const router = useRouter();
     const itemId = getItemId(router);
     const item = summary?.getItem(itemId?.toString());
-    console.log(`val:${itemId}`);
 
     return (
         <div className="section">
             <h1 className="title">{item?.name ?? "Unknown Item"}</h1>
-
             <div className="columns">
                 <div className="column is-half">
                     <div className="level">
@@ -115,6 +113,9 @@ const HighVolume: NextPage = function () {
                         </div>
                     </div>
                 </div>
+            </div>
+            <div className="container">
+                <ItemHistoryChart id={itemId} />
             </div>
         </div>
     );
