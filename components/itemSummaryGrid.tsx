@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { OsBuddyItemSummary } from '../types/osbuddy';
 
 import '../styles.scss';
+import FavoriteStar from './favoriteStar';
 
 interface ItemGridProps {
     items: OsBuddyItemSummary[];
@@ -20,6 +21,7 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
         <td>{item.buy_quantity}</td>
         <td>{item.sell_quantity}</td>
         <td>{item.buySellRatio.toFixed(2)}</td>
+        <td><FavoriteStar id={item.id.toString()}/></td>
     </tr>
 }
 
@@ -37,6 +39,7 @@ const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
                     <th>Buy Quantity</th>
                     <th>Sell Quantity</th>
                     <th>Buy/Sell Ratio</th>
+                    <th>Favorite</th>
                 </tr>
             </thead>
             <tbody>
