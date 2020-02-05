@@ -17,17 +17,25 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
         <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
         <td>{item.sell_average}</td>
         <td>{item.buy_average}</td>
-        <td><ConditionalSpan value={item.profit} 
-            threshold={0} 
-            thresholdClasses={['has-text-success', 'has-text-danger']}
-            prefixes={['+','-']}/></td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': item.profit >= 0,
+                    'has-text-danger': item.profit < 0
+                })
+            }>{item.profit >= 0 ? '+' : '-'}{item.profit.toLocaleString()}</span>
+        </td>
         <td>{`${item.returnOnInvestment.toFixed(2)}%`}</td>
         <td>{item.buy_quantity}</td>
         <td>{item.sell_quantity}</td>
-        <td><ConditionalSpan 
-            value={item.buySellRatio.toFixed(2)} 
-            threshold={1.0}
-            thresholdClasses={['has-text-success', 'has-text-danger']}/></td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': item.buySellRatio > 1,
+                    'has-text-danger': item.buySellRatio <= 1
+                })
+            }>{item.buySellRatio.toFixed(2)}</span>
+        </td>
         <td className="has-text-centered"><FavoriteStar id={item.id.toString()}/></td>
     </tr>
 }

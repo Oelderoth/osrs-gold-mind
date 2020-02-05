@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import usePriceSummary from '../hooks/usePriceSummary';
 import queryString from 'query-string';
+import classNames from 'classnames';
 
 import '../styles.scss';
 import ItemHistoryChart from '../components/itemHistoryChart';
@@ -51,10 +52,12 @@ const HighVolume: NextPage = function () {
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Profit</span>
-                        <span><ConditionalSpan value={item?.profit} 
-                            threshold={0} 
-                            thresholdClasses={['has-text-success', 'has-text-danger']}
-                            prefixes={['+','-']}/></span>
+                        <span className={
+                            classNames({
+                                'has-text-success': item?.profit >= 0,
+                                'has-text-danger': item?.profit < 0
+                            })
+                        }>{item?.profit >= 0 ? '+' : '-'}{item?.profit.toLocaleString()}</span>
                     </div>
                 </div>
                 <div className="tile is-vertical is-parent">
@@ -72,10 +75,12 @@ const HighVolume: NextPage = function () {
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Buy/Sell Ratio</span>
-                        <span><ConditionalSpan 
-                            value={item?.buySellRatio.toFixed(2)} 
-                            threshold={1.0}
-                            thresholdClasses={['has-text-success', 'has-text-danger']}/></span>
+                        <span className={
+                            classNames({
+                                'has-text-success': item?.buySellRatio > 1,
+                                'has-text-danger': item?.buySellRatio <= 1
+                            })
+                        }>{item?.buySellRatio.toFixed(2)}</span>
                     </div>
                 </div>
             </div>
