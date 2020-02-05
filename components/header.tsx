@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
+import TypeaheadInput from '../components/typeaheadInput';
 
 export default (props) => {
     const [isBurgerActive, setBurgerActive] = useState(false);
@@ -43,10 +44,10 @@ export default (props) => {
                     <div className="navbar-item">
                         <div className="field has-addons">
                             <div className="control has-icons-left">
-                                <input className="input" type="text" placeholder="Search for items..." />
                                 <span className="icon is-small is-left">
                                     <i className="fas fa-search" />
                                 </span>
+                                <TypeaheadInput className="input" type="text" placeholder="Search for items..." suggestions={["Saradomin Godsword", "Saradomin Sword", "Blessed Saradomin Sword", "Blessed Water", "Zamorakian Hasta"]} />
                             </div>
                             <div className="control">
                                 <a className="button is-info">
