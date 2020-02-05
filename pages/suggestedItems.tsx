@@ -11,7 +11,7 @@ function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary):
     return (itemB.buy_average - itemB.sell_average) - (itemA.buy_average - itemA.sell_average);
 }
 
-const HighVolume: NextPage = function () {
+const SuggestedItems: NextPage = function () {
     const { summary } = usePriceSummary();
     const items = summary?.getItems()
         ?.filter(filter)
@@ -21,11 +21,11 @@ const HighVolume: NextPage = function () {
     return (
         <div className="section">
             <h1 className="title">Items</h1>
-            <h2 className="subtitle">High Volume</h2>
+            <h2 className="subtitle">Suggested Items</h2>
 
             <ItemSummaryGrid items={items} />
         </div>
     );
 }
 
-export default HighVolume;
+export default SuggestedItems;

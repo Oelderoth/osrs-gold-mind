@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import {ItemsContextProvider} from '../context/ItemsContext';
+import Header from '../components/header';
 
 import '../styles.scss';
 
 const MyApp = ({ Component, pageProps }) => {
-    return (<div>
+    return (<Fragment>
+        <Header />
         <ItemsContextProvider>
             <Component {...pageProps} />
         </ItemsContextProvider>
-    </div>);
+    </Fragment>);
 }
 
 // Only uncomment this method if you have blocking data requirements for
