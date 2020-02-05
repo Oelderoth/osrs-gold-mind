@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, Fragment } from 'react';
 import useItemPriceHistory from '../hooks/useItemPriceHistory';
 import { OsBuddyItemHistoryEntry } from '../types/osbuddy';
 import { Line, Bar } from 'react-chartjs-2';
@@ -106,7 +106,7 @@ const ItemHistoryChart = function (props: ItemHistoryChartProps): ReactElement {
     const [priceDataset, quantityDataset] = buildGraphDatasets(history)
 
     return (
-        <div>
+        <Fragment>
             <div className="is-pulled-right field has-addons">
                 <TimeSpanButton label="Quarter" timeSpan={4320} setTimeSpan={setTimeSpan} currentTimeSpan={timeSpan}/>
                 <TimeSpanButton label="Month" timeSpan={1440} setTimeSpan={setTimeSpan} currentTimeSpan={timeSpan}/>
@@ -115,7 +115,7 @@ const ItemHistoryChart = function (props: ItemHistoryChartProps): ReactElement {
             </div>
             <Line height={50} data={priceDataset} options={chartOptions} />
             <Bar height={50}data={quantityDataset} options={chartOptions} />
-        </div>
+        </Fragment>
     );
 }
 

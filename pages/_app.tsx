@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
+import {ItemsContextProvider} from '../context/ItemsContext';
 
 import '../styles.scss';
 
 const MyApp = ({ Component, pageProps }) => {
     return (<div>
-        <Component {...pageProps} />
+        <ItemsContextProvider>
+            <Component {...pageProps} />
+        </ItemsContextProvider>
     </div>);
 }
 

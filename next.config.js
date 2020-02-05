@@ -1,5 +1,9 @@
 // next.config.js
-const withSass = require('@zeit/next-sass')
-module.exports = withSass({
-  //cssModules: true
-})
+const withPlugins = require('next-compose-plugins');
+const sass = require('@zeit/next-sass')
+const fonts = require('next-fonts');
+
+module.exports = withPlugins([
+  [sass],
+  [fonts, {enableSvg: true}]
+])
