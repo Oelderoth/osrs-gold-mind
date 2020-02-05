@@ -6,6 +6,7 @@ import queryString from 'query-string';
 
 import '../styles.scss';
 import ItemHistoryChart from '../components/itemHistoryChart';
+import ItemHistoryTable from '../components/itemHistoryTable';
 
 function getItemId(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -115,6 +116,7 @@ const HighVolume: NextPage = function () {
                 </div>
             </div>
             <div className="container">
+                <ItemHistoryTable id={itemId} />
                 <ItemHistoryChart id={itemId} />
             </div>
         </div>

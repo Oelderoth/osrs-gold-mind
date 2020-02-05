@@ -6,3 +6,18 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
 @import "./node_modules/@fortawesome/fontawesome-free/scss/regular.scss";
 @import "./node_modules/@fortawesome/fontawesome-free/scss/solid.scss";
 @import "./node_modules/@fortawesome/fontawesome-free/scss/fontawesome.scss";
+
+.item-history-table {
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+.table.is-sticky {
+    border-collapse: separate;
+}
+
+.table.is-sticky thead tr:first-child th{
+    position:sticky;
+    top: 0;
+    background-color: #ffffff;
+}
