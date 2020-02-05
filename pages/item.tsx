@@ -39,15 +39,15 @@ const HighVolume: NextPage = function () {
                 <div className="tile is-vertical is-parent">
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Current Price</span>
-                        <span>{item?.overall_average}</span>
+                        <span>{item?.overall_average.toLocaleString()}</span>
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Offer Price</span>
-                        <span>{item?.sell_average}</span>
+                        <span>{item?.sell_average.toLocaleString()}</span>
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Sell Price</span>
-                        <span>{item?.buy_average}</span>
+                        <span>{item?.buy_average.toLocaleString()}</span>
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Profit</span>
@@ -66,11 +66,11 @@ const HighVolume: NextPage = function () {
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Buying Quantity</span>
-                        <span>{item?.buy_quantity}</span>
+                        <span>{item?.buy_quantity.toLocaleString()}</span>
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Selling Quantity</span>
-                        <span>{item?.sell_quantity}</span>
+                        <span>{item?.sell_quantity.toLocaleString()}</span>
                     </div>
                     <div className="tile is-child is-marginless is-flex item-information-row">
                         <span>Buy/Sell Ratio</span>
