@@ -8,7 +8,6 @@ import classNames from 'classnames';
 import '../styles.scss';
 import ItemHistoryChart from '../components/itemHistoryChart';
 import ItemHistoryTable from '../components/itemHistoryTable';
-import ConditionalSpan from '../components/conditionalSpan';
 import FavoriteStar from '../components/favoriteStar';
 
 function getItemId(router: NextRouter): string | undefined {

@@ -5,7 +5,6 @@ import classNames from 'classnames';
 
 import '../styles.scss';
 import FavoriteStar from './favoriteStar';
-import ConditionalSpan from './conditionalSpan';
 
 interface ItemGridProps {
     items: OsBuddyItemSummary[];
