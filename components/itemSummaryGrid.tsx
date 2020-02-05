@@ -5,35 +5,38 @@ import classNames from 'classnames';
 
 import '../styles.scss';
 import FavoriteStar from './favoriteStar';
+import ConditionalSpan from './conditionalSpan';
 
 interface ItemGridProps {
     items: OsBuddyItemSummary[];
 }
 
-function ConditionalColoredSpan(props): ReactElement {
-    const {value, threshold, prefixes, className, ...other} = props;
-    return (
-        <span className={classNames(className, {
-            'has-text-success': value >= threshold,
-            'has-text-danger': value < threshold
-        })} {...other}>
-            {prefixes ? value >= threshold ? prefixes[0] : prefixes[1] : null}{value}
-        </span>
-    )
-}
-
 function itemRow(item: OsBuddyItemSummary): ReactElement {
     return <tr key={item.id}>
-        <td>{item.id}</td>
+        <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
         <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
         <td>{item.sell_average}</td>
         <td>{item.buy_average}</td>
-        <td><ConditionalColoredSpan value={item.profit} threshold={0} prefixes={['+','-']}/></td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': item.profit >= 0,
+                    'has-text-danger': item.profit < 0
+                })
+            }>{item.profit >= 0 ? '+' : '-'}{item.profit.toLocaleString()}</span>
+        </td>
         <td>{`${item.returnOnInvestment.toFixed(2)}%`}</td>
         <td>{item.buy_quantity}</td>
         <td>{item.sell_quantity}</td>
-        <td><ConditionalColoredSpan value={item.buySellRatio.toFixed(2)} threshold={1.0}/></td>
-        <td><FavoriteStar id={item.id.toString()}/></td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': item.buySellRatio > 1,
+                    'has-text-danger': item.buySellRatio <= 1
+                })
+            }>{item.buySellRatio.toFixed(2)}</span>
+        </td>
+        <td className="has-text-centered"><FavoriteStar id={item.id.toString()}/></td>
     </tr>
 }
 
@@ -42,8 +45,7 @@ const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
         <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Name</th>
+                    <th colSpan={2}>Name</th>
                     <th>Offer Price</th>
                     <th>Sell Price</th>
                     <th>Profit</th>
