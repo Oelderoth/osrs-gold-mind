@@ -113,8 +113,8 @@ const ItemHistoryChart = function (props: ItemHistoryChartProps): ReactElement {
                 <TimeSpanButton label="Week" timeSpan={180} setTimeSpan={setTimeSpan} currentTimeSpan={timeSpan}/>
                 <TimeSpanButton label="Day" timeSpan={30} setTimeSpan={setTimeSpan} currentTimeSpan={timeSpan}/>
             </div>
-            <Line height={50} data={priceDataset} options={chartOptions} />
-            <Bar height={50}data={quantityDataset} options={chartOptions} />
+            <Line height={100} data={priceDataset} options={chartOptions} />
+            <Bar height={100}data={quantityDataset} options={chartOptions} />
         </Fragment>
     );
 }

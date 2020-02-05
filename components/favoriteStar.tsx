@@ -3,21 +3,22 @@ import classNames from 'classnames';
 import { ItemsContext } from '../context/ItemsContext';
 
 interface FavoriteStarProps {
-    id: string;
+    id: string | number;
+    className?: string;
 }
 
 const FavoriteStar = (props: FavoriteStarProps) => {
     const {favorites, toggleFavorite} = useContext(ItemsContext);
-    const {id} = props;
+    const {id, className} = props;
 
-    const isActive = favorites.has(id.toString());
+    const isActive = favorites.has(id?.toString());
     const classes = classNames({
         "fa-star": true,
         "far": !isActive,
         "fas": isActive
     })
 
-    return (<span className="icon" onClick={()=>toggleFavorite(id)}>
+    return (<span className={classNames(className, "icon")} onClick={()=>toggleFavorite(id?.toString())}>
         <i className={classes} />
     </span>)
 }

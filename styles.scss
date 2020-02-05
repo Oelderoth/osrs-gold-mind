@@ -26,3 +26,27 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
     padding:8px;
     margin:24px;
 }
+
+.item-information-row {
+    justify-content: space-between;
+    padding: 0.5em 0;
+    &:not(:last-child) {
+        border-bottom: 1px solid $border;
+    }
+}
+
+// Make sure is-marginless is respected on vertical tile children
+.tile.is-vertical > .tile.is-child.is-marginless {
+    margin: 0 !important;
+}
+
+.item-icon-big {
+    flex: none;
+    display: flex;
+    align-items:center;
+    justify-content: center;
+    
+    @media screen and (min-width:$tablet) {
+        width: 96px;
+    }
+}

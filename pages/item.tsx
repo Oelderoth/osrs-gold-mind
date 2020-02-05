@@ -7,6 +7,8 @@ import queryString from 'query-string';
 import '../styles.scss';
 import ItemHistoryChart from '../components/itemHistoryChart';
 import ItemHistoryTable from '../components/itemHistoryTable';
+import ConditionalSpan from '../components/conditionalSpan';
+import FavoriteStar from '../components/favoriteStar';
 
 function getItemId(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -26,92 +28,54 @@ const HighVolume: NextPage = function () {
 
     return (
         <div className="section">
-            <h1 className="title">{item?.name ?? "Unknown Item"}</h1>
-            <div className="columns">
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">Current Price</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.overall_average}</div>
-                        </div>
+            <h1 className="title">
+                {item?.name ?? "Unknown Item"}
+                <FavoriteStar className="is-pulled-right" id={item?.id} />                    
+            </h1>
+            <div className="tile is-ancestor">
+                <div className="tile item-icon-big">
+                    { item && <img className="image is-96x96" src={`http://services.runescape.com/m=itemdb_oldschool/obj_big.gif?id=${item.id}`} /> }
+                </div>
+                <div className="tile is-vertical is-parent">
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Current Price</span>
+                        <span>{item?.overall_average}</span>
+                    </div>
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Offer Price</span>
+                        <span>{item?.sell_average}</span>
+                    </div>
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Sell Price</span>
+                        <span>{item?.buy_average}</span>
+                    </div>
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Profit</span>
+                        <span><ConditionalSpan value={item?.profit} 
+                            threshold={0} 
+                            thresholdClasses={['has-text-success', 'has-text-danger']}
+                            prefixes={['+','-']}/></span>
                     </div>
                 </div>
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">GE Limit</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">N/A</div>
-                        </div>
+                <div className="tile is-vertical is-parent">
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>GE Limit</span>
+                        <span>N/A</span>
                     </div>
-                </div>
-            </div>
-            <div className="columns">
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">Current Offer Price</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.sell_average ?? "N/A"}</div>
-                        </div>
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Buying Quantity</span>
+                        <span>{item?.buy_quantity}</span>
                     </div>
-                </div>
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">Buy Quanitity</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.buy_quantity ?? "N/A"}</div>
-                        </div>
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Selling Quantity</span>
+                        <span>{item?.sell_quantity}</span>
                     </div>
-                </div>
-            </div>
-            <div className="columns">
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">Current Sell Price</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.buy_average ?? "N/A"}</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">Sell Quantity</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.sell_quantity ?? "N/A"}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="columns">
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">Profit</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.profit ?? "N/A"}</div>
-                        </div>
-                    </div>
-                </div>
-                <div className="column is-half">
-                    <div className="level">
-                        <div className="level-left">
-                            <div className="level-item">R.O.I.</div>
-                        </div>
-                        <div className="level-right">
-                            <div className="level-item">{item?.returnOnInvestment?.toFixed(2) ?? "N/A"}</div>
-                        </div>
+                    <div className="tile is-child is-marginless is-flex item-information-row">
+                        <span>Buy/Sell Ratio</span>
+                        <span><ConditionalSpan 
+                            value={item?.buySellRatio.toFixed(2)} 
+                            threshold={1.0}
+                            thresholdClasses={['has-text-success', 'has-text-danger']}/></span>
                     </div>
                 </div>
             </div>
