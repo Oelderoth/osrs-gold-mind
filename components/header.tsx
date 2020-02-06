@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
 import TypeaheadInput from '../components/typeaheadInput';
+import usePriceSummary from '../hooks/usePriceSummary';
 
-export default (props) => {
+export default () => {
+    const [searchValue, setSearchValue] = useState();
+    const { summary } = usePriceSummary();
+    const itemNames = summary?.getItems().map(item => item.name) ?? []
     const [isBurgerActive, setBurgerActive] = useState(false);
 
     return (
@@ -47,12 +51,14 @@ export default (props) => {
                                 <span className="icon is-small is-left">
                                     <i className="fas fa-search" />
                                 </span>
-                                <TypeaheadInput className="input" type="text" placeholder="Search for items..." suggestions={["Saradomin Godsword", "Saradomin Sword", "Blessed Saradomin Sword", "Blessed Water", "Zamorakian Hasta"]} />
+                                <TypeaheadInput className="input" type="text" placeholder="Search for items..." suggestions={itemNames} onChange={(event) => setSearchValue(event.target.value)}/>
                             </div>
                             <div className="control">
-                                <a className="button is-info">
-                                    Search
-                                </a>
+                                <Link href={{pathname: "/search", query:{q:searchValue}}} >
+                                    <a className="button is-info">
+                                        Search
+                                    </a>
+                                </Link>
                             </div>
                         </div>
                     </div>

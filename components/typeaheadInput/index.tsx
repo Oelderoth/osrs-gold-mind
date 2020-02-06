@@ -3,9 +3,11 @@ import classNames from 'classnames';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import './style.scss';
+import { suggestedItemFilter } from '../../filters';
 
 interface TypeaheadProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     suggestions: string[];
+    maxSuggestions?: number;
 }
 
 const typeaheadOnFocus = (setFocused: (isFocused: boolean) => void, 
@@ -29,15 +31,18 @@ const typeaheadOnChange = (setValue: (value: string) => void,
     event: React.ChangeEvent<HTMLInputElement>) => {
 
     setValue(event.target.value);
+    onChange?.(event);
 }
 
-const suggestionBoldMatch = (value: string): (suggestion: string) => ReactElement => {
+const suggestionBoldMatch = (value: string, setValue:(value: string) => void): (suggestion: string, index: number) => ReactElement => {
     const escaped = '^(.*?)' + escapeStringRegexp(value).split(/\s+/g).map(segment => `(${segment})`).join('(.+?)') + '(.*?)$'
     const regex = new RegExp(escaped, 'i')
     
-    return (suggestion: string) => {
+    return (suggestion: string, index: number) => {
         const matches = regex.exec(suggestion);
-        return (<span className="typeahead-match">{matches.slice(1).map((match, index) => index%2 == 0 ? match : <span className='has-text-weight-semibold'>{match}</span>)}</span>);
+        return (<div key={`${suggestion}-${index}`} className="typeahead-entry" onMouseDown={() => {
+            setValue(suggestion);
+        }}>{matches.slice(1).map((match, index) => index%2 == 0 ? match : <span className='has-text-weight-semibold'>{match}</span>)}</div>);
     };
 }
 
@@ -50,14 +55,12 @@ const suggestionFilter = (value: string): (suggestion: string) => boolean => {
     return (suggestion) => regex.test(suggestion);
 }
 
-const suggestionSort = () => {}
-
 const TypeaheadInput = (props: TypeaheadProps) : ReactElement => {
     const [isFocused, setFocused] = useState(false);
     const [value, setValue] = useState('');
-    const {suggestions, onFocus, onBlur, onChange, ...others} = props;
+    const {suggestions, onFocus, onBlur, onChange, maxSuggestions=5, ...others} = props;
 
-    const filteredSuggestions = suggestions.filter(suggestionFilter(value));
+    const filteredSuggestions = suggestions.filter(suggestionFilter(value)).sort((a, b) => a.localeCompare(b)).slice(0,maxSuggestions);
 
     return (<span className='typeahead'>
         <input {...others} 
@@ -65,8 +68,8 @@ const TypeaheadInput = (props: TypeaheadProps) : ReactElement => {
             onBlur={(event) => typeaheadOnBlur(setFocused, onFocus, event)}
             onChange={(event) => typeaheadOnChange(setValue, onChange, event)}
             value={value}/>
-        <span className={classNames('typeahead-menu', {'is-visible': isFocused})}>
-            {filteredSuggestions.map(suggestionBoldMatch(value))}
+        <span className={classNames('typeahead-menu', {'is-visible': value?.length > 0 && isFocused })}>
+            {filteredSuggestions.map(suggestionBoldMatch(value, setValue))}
         </span>
     </span>);
 }
