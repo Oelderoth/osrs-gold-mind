@@ -39,7 +39,7 @@ const HighVolume: NextPage = function () {
     return (
         <div className="section">
             <h1 className="title">Items</h1>
-            <h2 className="subtitle">Search results for {query}</h2>
+            <h2 className="subtitle">Search results for "{query}"</h2>
 
             <ItemSummaryGrid items={items} />
         </div>

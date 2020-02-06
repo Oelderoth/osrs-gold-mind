@@ -11,6 +11,10 @@ export class OsBuddyPriceSummary {
     getItems(): OsBuddyItemSummary[] {
         return Object.getOwnPropertyNames(this.data).map(id => OsBuddyItemSummary.from(this.data[id]));
     }
+    
+    getItemByName(name: string): OsBuddyItemSummary | undefined {
+        return this.getItems().find(item => item.name.toLowerCase() === name.toLowerCase());
+    }
 }
 
 export class OsBuddyItemSummary {

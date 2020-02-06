@@ -22,7 +22,7 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
                     'has-text-success': item.profit >= 0,
                     'has-text-danger': item.profit < 0
                 })
-            }>{item.profit >= 0 ? '+' : '-'}{item.profit.toLocaleString()}</span>
+            }>{item.profit >= 0 ? '+' : null}{item.profit.toLocaleString()}</span>
         </td>
         <td>{`${item.returnOnInvestment.toFixed(2)}%`}</td>
         <td>{item.buy_quantity.toLocaleString()}</td>
