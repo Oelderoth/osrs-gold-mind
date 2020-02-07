@@ -54,7 +54,7 @@ function buildGraphDatasets(history: OsBuddyItemHistoryEntry[]) {
                 ...defaultStyle,
                 label: 'Sell Price',
                 borderColor: 'rgba(240, 150, 113,1)',
-                data: history?.filter(entry => entry.buyingPrice > 0).map(entry => ({ t: new Date(entry.ts), y: entry.buyingPrice })).slice(0,32) ?? []
+                data: history?.filter(entry => entry.buyingPrice > 0).sort((a, b) => b.ts - a.ts).slice(0,32).map(entry => ({ t: new Date(entry.ts), y: entry.buyingPrice }))?? []
             },
             {
                 ...defaultStyle,
@@ -72,7 +72,7 @@ function buildGraphDatasets(history: OsBuddyItemHistoryEntry[]) {
                 label: 'Sell Quantity',
                 borderColor: 'rgba(240, 150, 113,1)',
                 backgroundColor: 'rgba(240, 150, 113,0.4)',
-                data: history?.filter(entry => entry.buyingPrice > 0).map(entry => ({ t: new Date(entry.ts), y: entry.sellingQuantity })).slice(0,32) ?? []
+                data: history?.filter(entry => entry.buyingPrice > 0).sort((a, b) => b.ts - a.ts).slice(0,32).map(entry => ({ t: new Date(entry.ts), y: entry.sellingQuantity })) ?? []
             },
             {
                 ...defaultStyle,
