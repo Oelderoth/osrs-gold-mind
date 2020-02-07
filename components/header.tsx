@@ -65,7 +65,8 @@ export default () => {
                                             event.currentTarget.blur();
                                         }
                                     }}
-                                    onSuggestionSelect={suggestion => {
+                                    onSuggestionSelect={(suggestion, setValue) => {
+                                        setValue('');
                                         console.log(suggestion);
                                         const suggestedItem = summary.getItemByName(suggestion);
                                         if (suggestedItem) {

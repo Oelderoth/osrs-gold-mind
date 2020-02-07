@@ -28,6 +28,11 @@ const HighVolume: NextPage = function () {
     const itemId = getItemId(router);
     const item = summary?.getItem(itemId?.toString());
 
+    const { transactions, addTransaction } = useContext(TransactionContext);
+    if (item && transactions.length === 0) {
+        addTransaction(new Transaction("abababab", Date.now() - 1000 * 60 * 60, Date.now(), item.id.toString(), 333, item.sell_average, item.buy_average))
+    }
+
     return (
         <div className="section">
             <h1 className="title">

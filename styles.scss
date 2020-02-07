@@ -50,3 +50,23 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
         width: 96px;
     }
 }
+
+.is-space-between {
+    justify-content: space-between;
+}
+
+.is-flex-end {
+    justify-content: flex-end;
+}
+
+.is-align-center {
+    align-items: center;
+}
+
+.modal .panel {
+    background-color: $white-bis;
+}
+
+.is-overflow-visible {
+    overflow: visible;
+}

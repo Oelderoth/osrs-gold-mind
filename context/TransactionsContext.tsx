@@ -6,7 +6,8 @@ const FAVORITES_KEY = `${PREFIX}-log`;
 
 export class Transaction {
     constructor(public id: string,
-        public ts: number,
+        public buy_ts: number,
+        public sell_ts: number,
         public itemId: string,
         public quantity: number,
         public buyPrice: number,
@@ -18,6 +19,10 @@ export class Transaction {
 
     get profit(): number {
         return this.profitPerItem * this.quantity;
+    }
+
+    get returnOnInvestment(): number {
+        return (this.sellPrice - this.buyPrice) / this.buyPrice;
     }
 
     static from(itemSummary: Transaction): Transaction {

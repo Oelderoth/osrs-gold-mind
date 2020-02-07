@@ -8,7 +8,7 @@ import { suggestedItemFilter } from '../../filters';
 interface TypeaheadProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     suggestions: string[];
     maxSuggestions?: number;
-    onSuggestionSelect?: (suggestion: string) => void;
+    onSuggestionSelect?: (suggestion: string, setValue?:(value: String) => void) => void;
 }
 
 const typeaheadOnFocus = (setFocused: (isFocused: boolean) => void,
@@ -35,9 +35,8 @@ const typeaheadOnChange = (setValue: (value: string) => void,
     onChange?.(event);
 }
 
-const typeaheadOnSuggestionSelect = (onSuggestionSelect: (suggestion: string) => void, suggestion: string, setValue: (value: string) => void) => {
-    setValue('');
-    onSuggestionSelect?.(suggestion)
+const typeaheadOnSuggestionSelect = (onSuggestionSelect: (suggestion: string, setValue?:(value: string) => void) => void, suggestion: string, setValue: (value: string) => void) => {
+    onSuggestionSelect?.(suggestion, setValue)
 }
 
 const suggestionBoldMatch = (value: string, onSuggestionSelect: (suggestion: string) => void, setValue: (value: string) => void): (suggestion: string, index: number) => ReactElement => {
