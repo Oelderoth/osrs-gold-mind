@@ -1,0 +1,37 @@
+@charset "utf-8";
+@import "./node_modules/bulma/bulma.sass";
+
+.typeahead {
+    display: inline-block;
+    width: 100%;
+    position: relative;
+
+    .typeahead-menu {
+        display: none;
+
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        margin-top: 1px;
+        
+        background-color: $background;
+        border: 1px solid $border;
+        border-radius: $radius;
+    
+        &.is-visible {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .typeahead-entry {
+            display: block;
+            cursor: pointer;
+            padding: 0.25em 0.5em;
+            
+            &:hover {
+                background-color:darken($background, 10%);
+            }
+        }
+    }
+}

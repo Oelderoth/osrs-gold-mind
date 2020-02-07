@@ -1,9 +1,17 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import classNames from 'classnames';
+import TypeaheadInput from '../components/typeaheadInput';
+import usePriceSummary from '../hooks/usePriceSummary';
+import { useRouter } from 'next/router';
+import { suggestedItemFilter } from '../filters';
 
-export default (props) => {
+export default () => {
+    const [searchValue, setSearchValue] = useState();
+    const { summary } = usePriceSummary();
+    const itemNames = summary?.getItems().map(item => item.name) ?? []
     const [isBurgerActive, setBurgerActive] = useState(false);
+    const router = useRouter();
 
     return (
         <div className="navbar is-fixed-top" role="navigation">
@@ -43,15 +51,38 @@ export default (props) => {
                     <div className="navbar-item">
                         <div className="field has-addons">
                             <div className="control has-icons-left">
-                                <input className="input" type="text" placeholder="Search for items..." />
                                 <span className="icon is-small is-left">
                                     <i className="fas fa-search" />
                                 </span>
+                                <TypeaheadInput className="input" type="text" placeholder="Search for items..." suggestions={itemNames} 
+                                    onChange={(event) => setSearchValue(event.target.value)}
+                                    onKeyUp={(event) => {
+                                        if (event.keyCode === 13) {
+                                            router.push({
+                                                pathname: '/search',
+                                                query: {q: event.currentTarget.value}
+                                            })
+                                            event.currentTarget.blur();
+                                        }
+                                    }}
+                                    onSuggestionSelect={suggestion => {
+                                        console.log(suggestion);
+                                        const suggestedItem = summary.getItemByName(suggestion);
+                                        if (suggestedItem) {
+                                            console.log(suggestedItem);
+                                            router.push({
+                                                pathname: '/item',
+                                                query: {id: suggestedItem.id}
+                                            });
+                                        }}
+                                    }/>
                             </div>
                             <div className="control">
-                                <a className="button is-info">
-                                    Search
-                                </a>
+                                <Link href={{pathname: "/search", query:{q:searchValue}}} >
+                                    <a className="button is-info">
+                                        Search
+                                    </a>
+                                </Link>
                             </div>
                         </div>
                     </div>

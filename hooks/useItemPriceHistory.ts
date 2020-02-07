@@ -1,5 +1,6 @@
 import { OsBuddyItemHistoryEntry } from '../types/osbuddy';
 import { useState, useEffect } from 'react';
+import useCache from './useCache';
 
 interface useItemPriceHistoryResult {
     history: OsBuddyItemHistoryEntry[];
@@ -29,8 +30,9 @@ export default function useItemPriceHistory(itemId: string|number, timeSpan: num
 
     useEffect(() => {
         (async () => {
+            const [promise] = useCache(`item-history-${itemId}-${timeSpan}`, ()=>fetchItemHistory(itemId.toString(), timeSpan))
             if (itemId && timespanIsValid(timeSpan)) {
-                setHistory(await fetchItemHistory(itemId.toString(), timeSpan));
+                setHistory(await promise);
             }
         })();
     }, [itemId, timeSpan]);

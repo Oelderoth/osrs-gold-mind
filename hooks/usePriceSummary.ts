@@ -1,5 +1,6 @@
 import { IRawOsBuddySummaryResponse,OsBuddyPriceSummary, OsBuddyItemSummary } from '../types/osbuddy';
 import { useState, useEffect } from 'react';
+import useCache from './useCache';
 
 const RAW_SUMMARY_URL = 'https://rsbuddy.com/exchange/summary.json';
 const SUMMARY_URL = `https://cors-anywhere.herokuapp.com/${RAW_SUMMARY_URL}`
@@ -23,7 +24,8 @@ export default function usePriceSummary() : usePriceSummaryResult {
 
     useEffect(() => {
         (async () => {
-            setSummary(await fetchItemSummaries());
+            const [promise] = useCache('item-summary-fetch', fetchItemSummaries);
+            setSummary(await promise);
         })();
     }, []);
 
