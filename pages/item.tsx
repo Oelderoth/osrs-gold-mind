@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { NextPage } from 'next';
 import { useRouter, NextRouter } from 'next/router';
 import usePriceSummary from '../hooks/usePriceSummary';
@@ -9,6 +9,7 @@ import '../styles.scss';
 import ItemHistoryChart from '../components/itemHistoryChart';
 import ItemHistoryTable from '../components/itemHistoryTable';
 import FavoriteStar from '../components/favoriteStar';
+import { TransactionContext, Transaction } from '../context/TransactionsContext';
 
 function getItemId(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -22,6 +23,7 @@ function getItemId(router: NextRouter): string | undefined {
 
 const HighVolume: NextPage = function () {
     const { summary } = usePriceSummary();
+
     const router = useRouter();
     const itemId = getItemId(router);
     const item = summary?.getItem(itemId?.toString());

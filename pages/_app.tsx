@@ -1,6 +1,7 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import dynamic from 'next/dynamic';
-import {ItemsContextProvider} from '../context/ItemsContext';
+import { ItemsContextProvider } from '../context/ItemsContext';
+import { TransactionContextProvider } from '../context/TransactionsContext';
 import Header from '../components/header';
 
 import '../styles.scss';
@@ -8,9 +9,11 @@ import '../styles.scss';
 const MyApp = ({ Component, pageProps }) => {
     return (<Fragment>
         <Header />
-        <ItemsContextProvider>
-            <Component {...pageProps} />
-        </ItemsContextProvider>
+        <TransactionContextProvider>
+            <ItemsContextProvider>
+                <Component {...pageProps} />
+            </ItemsContextProvider>
+        </TransactionContextProvider>
     </Fragment>);
 }
 
