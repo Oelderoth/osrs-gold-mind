@@ -22,7 +22,7 @@ export class Transaction {
     }
 
     get returnOnInvestment(): number {
-        return (this.sellPrice - this.buyPrice) / this.buyPrice;
+        return (this.sellPrice - this.buyPrice) / this.buyPrice * 100;
     }
 
     static from(itemSummary: Transaction): Transaction {

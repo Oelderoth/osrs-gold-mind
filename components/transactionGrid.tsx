@@ -10,9 +10,10 @@ import usePriceSummary from '../hooks/usePriceSummary';
 
 interface TransactionGridProps {
     transactions: Transaction[];
+    onDeleteTransaction: (transaction: Transaction) => void;
 }
 
-function transactionRow(summary: OsBuddyPriceSummary): (transaction: Transaction) => ReactElement {
+function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transaction:Transaction) => void): (transaction: Transaction) => ReactElement {
     return (transaction: Transaction) => {
         if (!summary) return;
         const item = summary.getItem(transaction.itemId);
@@ -27,15 +28,20 @@ function transactionRow(summary: OsBuddyPriceSummary): (transaction: Transaction
             <td>{transaction.buyPrice.toLocaleString()}</td>
             <td>{transaction.sellPrice.toLocaleString()}</td>
             <td>
-                <span className={profitClassName}>{item.profit >= 0 ? '+' : null}{transaction.returnOnInvestment.toFixed(2)}%</span>
+                <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.returnOnInvestment.toFixed(2)}%</span>
             </td>
             <td>
-                <span className={profitClassName}>{item.profit >= 0 ? '+' : null}{transaction.profitPerItem.toLocaleString()}</span>
+                <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.profitPerItem.toLocaleString()}</span>
             </td>
             <td>
-                <span className={profitClassName}>{item.profit >= 0 ? '+' : null}{transaction.profit.toLocaleString()}</span>
+                <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.profit.toLocaleString()}</span>
             </td>
             <td>{new Date(transaction.sell_ts).toLocaleString()}</td>
+            <td className="has-text-centered">
+                <span className='icon has-pointer' onClick={() => {
+                    deleteTransaction(transaction);
+                }}><i className='fas fa-trash' /></span>
+            </td>
         </tr>);
     }
 }
@@ -55,10 +61,11 @@ const TransactionGrid = function (props: TransactionGridProps): ReactElement {
                     <th>Profit (Per Item)</th>
                     <th>Profit (Total)</th>
                     <th>Date</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
-                {props.transactions.map(transactionRow(summary))}
+                {props.transactions.map(transactionRow(summary, props.onDeleteTransaction))}
             </tbody>
         </table>
     );

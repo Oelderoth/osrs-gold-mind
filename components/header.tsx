@@ -40,12 +40,13 @@ export default () => {
                     <Link href="/favoriteItems"><a className="navbar-item">Favorites</a></Link>
                     <Link href="/suggestedItems"><a className="navbar-item">Suggested Items</a></Link>
                     <div className="navbar-item has-dropdown is-hoverable">
-                        <a className="navbar-link">Others</a>
+                        <a className="navbar-link">Other Flips</a>
                         <div className="navbar-dropdown">
                             <Link href="/highVolume"><a className="navbar-item">High Volume</a></Link>
                             <Link href="/highestMargin"><a className="navbar-item">High Margin</a></Link>
                         </div>
                     </div>
+                    <Link href="/transactions"><a className="navbar-item">Transactions</a></Link>
                 </div>
                 <div className="navbar-end">
                     <div className="navbar-item">
