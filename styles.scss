@@ -55,6 +55,10 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
     justify-content: space-between;
 }
 
+.is-align-flex-start {
+    align-items: flex-start;
+}
+
 .is-flex-end {
     justify-content: flex-end;
 }
@@ -63,8 +67,28 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
     align-items: center;
 }
 
+.is-flex-direction-column {
+    flex-direction: column;
+}
+
+.is-flex-none {
+    flex: none;
+}
+
+.is-max-height-100 {
+    max-height:100%;
+}
+
 .modal .panel {
     background-color: $white-bis;
+}
+
+.is-overflow-hidden {
+    overflow: hidden;
+}
+
+.is-overflow-auto {
+    overflow: auto;
 }
 
 .is-overflow-visible {

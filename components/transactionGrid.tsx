@@ -48,7 +48,7 @@ function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transa
 
 const TransactionGrid = function (props: TransactionGridProps): ReactElement {
     const { summary } = usePriceSummary();
-
+    const transactions = props.transactions.sort((a, b) => b.sell_ts - a.sell_ts);
     return (
         <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
@@ -65,7 +65,7 @@ const TransactionGrid = function (props: TransactionGridProps): ReactElement {
                 </tr>
             </thead>
             <tbody>
-                {props.transactions.map(transactionRow(summary, props.onDeleteTransaction))}
+                {transactions.map(transactionRow(summary, props.onDeleteTransaction))}
             </tbody>
         </table>
     );
