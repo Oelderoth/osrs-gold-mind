@@ -115,17 +115,21 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
         }
 
         a.navbar-link {
-            padding: 0.375rem 1rem 0.375rem 2.5rem;
+            padding: 0.375rem 2.5rem 0.375rem 1rem;
+            width: 100%;
+
+            &:not(.is-arrowless)::after {
+                transform: rotate(-135deg);
+            }
         }
 
         div.navbar-item:focus, div.navbar-item:hover {
-            background-color: whitesmoke;
-            color: #0a0a0a;
+            background-color: $navbar-item-hover-background-color;
+            color: $navbar-item-hover-color;
         }
         
     
         .navbar-dropdown {
-            background-color: red !important;
             border-top-width: 1px;
             margin-left: 100%;
             top: -0.5rem;
