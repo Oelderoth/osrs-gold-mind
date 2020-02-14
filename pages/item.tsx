@@ -9,7 +9,6 @@ import '../styles.scss';
 import ItemHistoryChart from '../components/itemHistoryChart';
 import ItemHistoryTable from '../components/itemHistoryTable';
 import FavoriteStar from '../components/favoriteStar';
-import { TransactionContext, Transaction } from '../context/TransactionsContext';
 
 function getItemId(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -27,11 +26,6 @@ const HighVolume: NextPage = function () {
     const router = useRouter();
     const itemId = getItemId(router);
     const item = summary?.getItem(itemId?.toString());
-
-    const { transactions, addTransaction } = useContext(TransactionContext);
-    if (item && transactions.length === 0) {
-        addTransaction(new Transaction("abababab", Date.now() - 1000 * 60 * 60, Date.now(), item.id.toString(), 333, item.sell_average, item.buy_average))
-    }
 
     return (
         <div className="section">
