@@ -40,13 +40,33 @@ export default () => {
                     <Link href="/favoriteItems"><a className="navbar-item">Favorites</a></Link>
                     <Link href="/suggestedItems"><a className="navbar-item">Suggested Items</a></Link>
                     <div className="navbar-item has-dropdown is-hoverable">
-                        <a className="navbar-link">Other Flips</a>
+                        <a className="navbar-link">Others</a>
                         <div className="navbar-dropdown">
                             <Link href="/highVolume"><a className="navbar-item">High Volume</a></Link>
                             <Link href="/highestMargin"><a className="navbar-item">High Margin</a></Link>
                         </div>
                     </div>
-                    <Link href="/transactions"><a className="navbar-item">Transactions</a></Link>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link">Tags</a>
+                        <div className="navbar-dropdown">
+                            <a className="navbar-item">Before</a>
+                            <div className="navbar-item has-dropdown is-hoverable">
+                                <a className="navbar-link">Herblore</a>
+                                <div className="navbar-dropdown">
+                                    <Link href="/highVolume"><a className="navbar-item">Unfinished Potions</a></Link>
+                                    <Link href="/highestMargin"><a className="navbar-item">Secondaries</a></Link>
+                                    <div className="navbar-item has-dropdown is-hoverable">
+                                        <a className="navbar-link">Nested</a>
+                                        <div className="navbar-dropdown">
+                                            <Link href="/highVolume"><a className="navbar-item"> Potions</a></Link>
+                                            <Link href="/highestMargin"><a className="navbar-item">Secondaries</a></Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <a className="navbar-item">After</a>
+                        </div>
+                    </div>
                 </div>
                 <div className="navbar-end">
                     <div className="navbar-item">
