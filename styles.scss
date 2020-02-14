@@ -98,3 +98,41 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
 .has-pointer {
     cursor: pointer;
 }
+
+@media screen and (min-width: $desktop)
+{
+    .navbar-item.is-hoverable:hover .navbar-dropdown, .navbar-item.is-active .navbar-dropdown {
+        .navbar-item:not(.is-active, .is-hoverable)>.navbar-dropdown, .navbar-item.is-hoverable:not(:hover)>.navbar-dropdown {
+            display: none;
+        }
+    
+        .navbar-item.is-active>.navbar-dropdown, .navbar-item.is-hoverable:hover>.navbar-dropdown {
+            display: block;
+        }
+
+        div.navbar-item.has-dropdown {
+            padding: 0;
+        }
+
+        a.navbar-link {
+            padding: 0.375rem 2.5rem 0.375rem 1rem;
+            width: 100%;
+
+            &:not(.is-arrowless)::after {
+                transform: rotate(-135deg);
+            }
+        }
+
+        div.navbar-item:focus, div.navbar-item:hover {
+            background-color: $navbar-item-hover-background-color;
+            color: $navbar-item-hover-color;
+        }
+        
+    
+        .navbar-dropdown {
+            border-top-width: 1px;
+            margin-left: 100%;
+            top: -0.5rem;
+        }
+    }
+}
