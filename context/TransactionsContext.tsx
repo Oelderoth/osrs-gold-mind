@@ -34,12 +34,14 @@ interface TransactionContext {
     transactions: Transaction[];
     deleteTransaction: (transaction: Transaction) => void;
     addTransaction: (transaction: Transaction) => void;
+    addTransactions: (transactions: Transaction[]) => void;
 }
 
 const context = React.createContext({ 
     transactions: [],
     deleteTransaction: (transaction: Transaction) => {},
-    addTransaction: (transaction: Transaction) => {}
+    addTransaction: (transaction: Transaction) => {},
+    addTransactions: (transactions: Transaction[]) => {}
 } as TransactionContext);
 
 const TransactionListMapper: StringMapper<Transaction[]>= {
@@ -65,7 +67,15 @@ const provider = (props) => {
         setTransactions(newTransactions);
     }
 
-    return (<context.Provider value={{ transactions, addTransaction, deleteTransaction  }}>
+    const addTransactions = (transactionsToAdd: Transaction[]) => {
+        const newIds = transactionsToAdd.map(t => t.id);
+        console.log(`Adding ${newIds}`)
+        const newTransactions = transactions.filter(t => !newIds.includes(t.id))
+            .concat(transactionsToAdd);
+        setTransactions(newTransactions);
+    }
+
+    return (<context.Provider value={{ transactions, addTransaction, deleteTransaction, addTransactions }}>
         {props.children}
     </context.Provider>);
 }

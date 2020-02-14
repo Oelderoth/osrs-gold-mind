@@ -10,6 +10,8 @@ import { truncate } from 'fs';
 interface RuneliteImportModalProps {
     visible: boolean;
     session: RuneliteSession;
+    transactions: Transaction[];
+    onTransactionsImport: (transactions: Transaction[]) => void;
     onCancel: () => void;
 }
 
@@ -21,7 +23,7 @@ const findTransactions = (geHistory: RuneliteGrandExchangeTrade[]): Transaction[
     let transactions: Transaction[] = [];
         
     // Group trades by itemId
-    for (let trade of geHistory.filter(t => Date.now() - t.time.seconds * 1000 < 1000 * 60 * 60 * 48)) {
+    for (let trade of geHistory) {
         if (groupedTrades.has(trade.itemId)) {
             groupedTrades.get(trade.itemId).push(trade);
         } else {
@@ -115,6 +117,16 @@ const RuneliteImportModal = (props: RuneliteImportModalProps): ReactElement => {
     const { summary } = usePriceSummary();
     const geHistory = useRuneliteGeHistory(props?.session);
     const transactions = findTransactions(geHistory)
+    const [ selectedTransactions, setSelectedTransactions ] = useState([]);
+    const existingTransactionIds = new Set(props?.transactions?.map(t => t.id));
+
+    const toggleTransaction = (transaction: Transaction) => {
+        if (selectedTransactions.find(t => t.id === transaction.id)) {
+            setSelectedTransactions(selectedTransactions.filter(t => t.id !== transaction.id));
+        } else {
+            setSelectedTransactions([...selectedTransactions, transaction]);
+        }
+    }
 
     return (<div className={classNames('modal', {
         'is-active': props.visible
@@ -135,7 +147,7 @@ const RuneliteImportModal = (props: RuneliteImportModalProps): ReactElement => {
                             </tr>
                         </thead>
                         <tbody>
-                            {transactions.map(transaction => {
+                            {transactions.filter(t => !existingTransactionIds.has(t.id)).map(transaction => {
                                 if (!summary) return;
                                 const item = summary.getItem(transaction.itemId);
                                 return (<tr>
@@ -144,15 +156,14 @@ const RuneliteImportModal = (props: RuneliteImportModalProps): ReactElement => {
                                     <td>{transaction.quantity.toLocaleString()}</td>
                                     <td>{transaction.buyPrice.toLocaleString()}</td>
                                     <td>{transaction.sellPrice.toLocaleString()}</td>
-                                    <td className="has-text-centered"><input type="checkbox" /></td>
+                                    <td className="has-text-centered"><input type="checkbox" checked={selectedTransactions.find(t => t.id === transaction.id)} onChange={() => toggleTransaction(transaction)}/></td>
                                 </tr>);
                             })}
                         </tbody>
                     </table>
                 </div>
                 <div className="panel-block is-flex is-flex-end buttons is-flex-none">
-                    <button className={classNames("button is-small is-primary")} onClick={() => {
-                    }}>Import Selected Transaction</button>
+                    <button className={classNames("button is-small is-primary")} onClick={() => props?.onTransactionsImport?.(selectedTransactions)}>Import Selected Transaction</button>
                     <button className="button is-small" onClick={() => props?.onCancel?.()}>Cancel</button>
                 </div>
             </div>

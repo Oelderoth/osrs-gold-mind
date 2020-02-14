@@ -13,7 +13,7 @@ import useRunelite, { RuneliteSessionStatus } from '../hooks/useRuneliteSession'
 import RuneliteImportModal from '../components/runeliteImportModal';
 
 const Transactions: NextPage = function () {
-    const { transactions, addTransaction, deleteTransaction } = useContext(TransactionContext);
+    const { transactions, addTransaction, addTransactions, deleteTransaction } = useContext(TransactionContext);
     const [newTransactionModalVisible, setNewTransactionModalVisible] = useState(false);
     const [runeliteModalVisible, setRuneliteModalVisible] = useState(false);
     const { session, login } = useRunelite();
@@ -57,7 +57,12 @@ const Transactions: NextPage = function () {
             {// Only create a transaction modal when visible, so that fields are cleared after closing
             runeliteModalVisible && <RuneliteImportModal visible={runeliteModalVisible} 
             session={session}
-            onCancel={() => setRuneliteModalVisible(false)}/>}
+            transactions={transactions}
+            onCancel={() => setRuneliteModalVisible(false)}
+            onTransactionsImport={(transactionsToImport) => {
+                addTransactions(transactionsToImport);
+                setRuneliteModalVisible(false);
+            }}/>}
         </Fragment>
     );
 }
