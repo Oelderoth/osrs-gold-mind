@@ -55,7 +55,6 @@ export default () => {
                                     <Link href="/category/herblore"><a className="navbar-item">Crafting</a></Link>
                                     <Link href="/category/farming"><a className="navbar-item">Farming</a></Link>
                                     <Link href="/category/fletching"><a className="navbar-item">Fletching</a></Link>
-                                    <Link href="/category/food"><a className="navbar-item">Food</a></Link>
                                     <Link href="/category/herblore"><a className="navbar-item">Herblore</a></Link>
                                     <Link href="/category/implings"><a className="navbar-item">Implings</a></Link>
                                     <Link href="/category/logs"><a className="navbar-item">Logs</a></Link>
