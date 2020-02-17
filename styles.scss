@@ -121,6 +121,10 @@ $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts" !default;
             &:not(.is-arrowless)::after {
                 transform: rotate(-135deg);
             }
+
+            &:not(.is-active, .is-hoverable), &.is-hoverable:not(:hover) {
+                background-color: transparent;
+            }
         }
 
         div.navbar-item:focus, div.navbar-item:hover {
