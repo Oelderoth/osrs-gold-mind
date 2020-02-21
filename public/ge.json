@@ -1,0 +1,352 @@
+[
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18999,
+        "time": {
+            "seconds": 1581211548,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18500,
+        "time": {
+            "seconds": 1581211552,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18504,
+        "time": {
+            "seconds": 1581213074,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 295,
+        "price": 18995,
+        "time": {
+            "seconds": 1581216381,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1000,
+        "price": 18501,
+        "time": {
+            "seconds": 1581220813,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 489,
+        "price": 18995,
+        "time": {
+            "seconds": 1581229269,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 217,
+        "price": 18995,
+        "time": {
+            "seconds": 1581229269,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18999,
+        "time": {
+            "seconds": 1581229350,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18525,
+        "time": {
+            "seconds": 1581229354,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 2000,
+        "price": 18526,
+        "time": {
+            "seconds": 1581239132,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18998,
+        "time": {
+            "seconds": 1581239176,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 2001,
+        "price": 18997,
+        "time": {
+            "seconds": 1581277840,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18999,
+        "time": {
+            "seconds": 1581277882,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18652,
+        "time": {
+            "seconds": 1581277888,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1000,
+        "price": 18652,
+        "time": {
+            "seconds": 1581298666,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18995,
+        "time": {
+            "seconds": 1581298676,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18621,
+        "time": {
+            "seconds": 1581298681,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1000,
+        "price": 18994,
+        "time": {
+            "seconds": 1581308895,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18737,
+        "time": {
+            "seconds": 1581312765,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18621,
+        "time": {
+            "seconds": 1581312770,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18500,
+        "time": {
+            "seconds": 1581358653,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18004,
+        "time": {
+            "seconds": 1581358659,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1286,
+        "price": 18005,
+        "time": {
+            "seconds": 1581374914,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18675,
+        "time": {
+            "seconds": 1581374943,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18100,
+        "time": {
+            "seconds": 1581374954,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 749,
+        "price": 18101,
+        "time": {
+            "seconds": 1581378237,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 280,
+        "price": 18674,
+        "time": {
+            "seconds": 1581378242,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18400,
+        "time": {
+            "seconds": 1581378250,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18180,
+        "time": {
+            "seconds": 1581550228,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1279,
+        "price": 18674,
+        "time": {
+            "seconds": 1581550244,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 478,
+        "price": 18171,
+        "time": {
+            "seconds": 1581569292,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18140,
+        "time": {
+            "seconds": 1581642344,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 18000,
+        "time": {
+            "seconds": 1581642349,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": true,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 17212,
+        "time": {
+            "seconds": 1581797298,
+            "nanos": 0
+        }
+    },
+    {
+        "buy": false,
+        "itemId": 11252,
+        "quantity": 1,
+        "price": 17201,
+        "time": {
+            "seconds": 1581797304,
+            "nanos": 0
+        }
+    }
+]

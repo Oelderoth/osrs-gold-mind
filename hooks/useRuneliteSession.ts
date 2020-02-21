@@ -2,11 +2,11 @@ import useSessionState from "./useSessionState";
 import generateUuid from 'uuid/v4';
 import { useState, useEffect } from "react";
 
-const RUNELITE_VERSION = '1.6.5';
+const RUNELITE_VERSION = '1.6.7';
 const RUNELITE_URL = `http://api.runelite.net/runelite-${RUNELITE_VERSION}`;
 const LOGIN_URL = `${RUNELITE_URL}/account/login`;
 const SESSION_CHECK_URL = `${RUNELITE_URL}/account/session-check`;
-const GE_HISTORY_URL = `${RUNELITE_URL}/ge?limit=500&offset=0`;
+const GE_HISTORY_URL = `${RUNELITE_URL}/ge?offset=0`;
 
 export enum RuneliteSessionStatus {
     LOGGED_OUT,
@@ -140,7 +140,7 @@ export function useRuneliteGeHistory(session: RuneliteSession): RuneliteGrandExc
     const [history, setHistory] = useState([]);
 
     useEffect(() => {(async () => {
-        if (session.status === RuneliteSessionStatus.LOGGED_IN) {
+        if (session?.status === RuneliteSessionStatus.LOGGED_IN) {
             setHistory(await fetchJsonOrThrow(GE_HISTORY_URL, {headers:{'RUNELITE-AUTH': session.uuid}}));
         }
     })()}, [session, session.status])

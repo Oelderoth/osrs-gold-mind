@@ -1,71 +1,128 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Link from 'next/link';
-import { OsBuddyItemSummary, OsBuddyPriceSummary } from '../types/osbuddy';
+import { OsBuddyPriceSummary } from '../types/osbuddy';
 import classNames from 'classnames';
 
 import '../styles.scss';
-import FavoriteStar from './favoriteStar';
-import { Transaction } from '../context/TransactionsContext';
 import usePriceSummary from '../hooks/usePriceSummary';
+import { Transaction, BasicItemTrade, TransactionType, BasicItemTransaction } from '../types/transactions';
 
 interface TransactionGridProps {
-    transactions: Transaction[];
-    onDeleteTransaction: (transaction: Transaction) => void;
+    transactions: Transaction<any>[];
+    onDeleteTransaction: (transaction: Transaction<any>) => void;
 }
 
-function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transaction:Transaction) => void): (transaction: Transaction) => ReactElement {
-    return (transaction: Transaction) => {
-        if (!summary) return;
-        const item = summary.getItem(transaction.itemId);
-        const profitClassName = classNames({
-            'has-text-success': transaction.profit >= 0,
-            'has-text-danger': transaction.profit < 0
-        });
-        return (<tr key={transaction.id}>
+function basicItemTradeRow(summary: OsBuddyPriceSummary, deleteTransaction: (transaction:Transaction<BasicItemTrade>) => void, transaction: BasicItemTransaction, showDetails: boolean, onClick: (e:React.MouseEvent<HTMLTableRowElement, MouseEvent>) => void): ReactElement {
+    if (!summary) return;
+    const item = summary.getItem(transaction.trades[0].itemId);
+    const profitClassName = classNames({
+        'has-text-success': transaction.profit >= 0,
+        'has-text-danger': transaction.profit < 0
+    });
+    const quantity = transaction.trades.reduce((acc, cur) => acc + cur.quantity, 0);
+    return (<React.Fragment key={transaction.id}>
+        <tr className='has-pointer' onClick={e => onClick?.(e)}>
             <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
             <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
-            <td>{transaction.quantity.toLocaleString()}</td>
+            <td>{quantity.toLocaleString()}</td>
             <td>{transaction.buyPrice.toLocaleString()}</td>
             <td>{transaction.sellPrice.toLocaleString()}</td>
             <td>
-                <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.returnOnInvestment.toFixed(2)}%</span>
-            </td>
-            <td>
-                <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.profitPerItem.toLocaleString()}</span>
-            </td>
-            <td>
                 <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.profit.toLocaleString()}</span>
             </td>
-            <td>{new Date(transaction.sell_ts).toLocaleString()}</td>
+            <td>
+                <span className={profitClassName}>{transaction?.profit >= 0 ? '+' : null}{transaction.ROI.toFixed(2)}%</span>
+            </td>
+            <td>{new Date(transaction.endTime).toLocaleString()}</td>
             <td className="has-text-centered">
                 <span className='icon has-pointer' onClick={() => {
                     deleteTransaction(transaction);
                 }}><i className='fas fa-trash' /></span>
             </td>
-        </tr>);
+        </tr>
+        <tr className={classNames("is-detail", {'is-hidden': !showDetails})}>
+            <td></td>
+            <td colSpan={8}>
+                <table className="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
+                    <thead>
+                        <tr>
+                            <th>Quantity</th>
+                            <th>Buy Price</th>
+                            <th>Sell Price</th>
+                            <th>ROI</th>
+                            <th>Profit (per Item)</th>
+                            <th>Profit (Total)</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    {transaction.trades.map(trade => (
+                        <tr key={trade.id}>
+                            <td>
+                                {trade.quantity.toLocaleString()}
+                            </td>
+                            <td>
+                                {trade.buyPrice.toLocaleString()}
+                            </td>
+                            <td>
+                                {trade.sellPrice.toLocaleString()}
+                            </td>
+                            <td>
+                                {`${trade.ROI.toFixed(2)}%`}
+                            </td>
+                            <td>
+                                {trade.profitPerItem.toLocaleString()}
+                            </td>
+                            <td>
+                                {trade.profit.toLocaleString()}
+                            </td>
+                            <td>
+                                {new Date(trade.endTime).toLocaleString()}
+                            </td>
+                        </tr>
+                    ))}
+                </table>
+            </td>
+        </tr>
+    </React.Fragment>);
+}
+
+function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transaction:Transaction<any>) => void, displayedSummary: string, setDisplayedSummary: (summary: string) => void): (transaction: Transaction<any>) => ReactElement {
+    return (transaction: Transaction<any>) => {
+        switch (transaction.transactionType) {
+            case TransactionType.BASIC_ITEM_TRADE:
+                return basicItemTradeRow(summary, deleteTransaction, transaction as BasicItemTransaction, transaction.id === displayedSummary, () => {
+                    if (displayedSummary === transaction.id) {
+                        setDisplayedSummary(null);
+                    } else {
+                        setDisplayedSummary(transaction.id);
+                    }
+                });
+            default:
+                return null;
+        }
     }
 }
 
 const TransactionGrid = function (props: TransactionGridProps): ReactElement {
+    const [displayedSummary, setDisplayedSummary] = useState(null);
     const { summary } = usePriceSummary();
-    const transactions = props.transactions.sort((a, b) => b.sell_ts - a.sell_ts);
+    const transactions = props.transactions.sort((a, b) => b.endTime - a.endTime);
     return (
-        <table className="table is-fullwidth is-striped is-hoverable">
+        <table className="table is-fullwidth is-hoverable">
             <thead>
                 <tr>
                     <th colSpan={2}>Name</th>
                     <th>Quantity</th>
                     <th>Buy Price</th>
                     <th>Sell Price</th>
-                    <th>ROI</th>
-                    <th>Profit (Per Item)</th>
                     <th>Profit (Total)</th>
+                    <th>ROI</th>
                     <th>Date</th>
                     <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
-                {transactions.map(transactionRow(summary, props.onDeleteTransaction))}
+                {transactions.map(transactionRow(summary, props.onDeleteTransaction, displayedSummary, setDisplayedSummary))}
             </tbody>
         </table>
     );
