@@ -10,9 +10,22 @@ function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary):
     return (itemB.buy_average - itemB.sell_average) - (itemA.buy_average - itemA.sell_average);
 }
 
-const itemWhitelist = new Set<String>([]);
+const itemWhitelist = new Set<String|RegExp|number>([
+    /plank/ig
+]);
 
 const filter = (item: OsBuddyItemSummary): boolean => {
+    for (let val of itemWhitelist.values()) {
+        if (val instanceof RegExp) {
+            if (val.test(item.name)) {
+                return true;
+            }
+        } else if (typeof val === 'number') {
+            if (val === item.id) {
+                return true;
+            }
+        }
+    }
     return itemWhitelist.has(item.name.toLowerCase());
 }
 
