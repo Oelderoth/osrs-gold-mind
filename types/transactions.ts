@@ -53,7 +53,9 @@ export interface Transaction<T extends Trade> {
     readonly buyPrice: number;
     readonly sellPrice: number;
     readonly ROI: number;
-    readonly transactionType: TransactionType;
+    readonly transactionType: TransactionType;    
+    readonly name?: string;
+    readonly quantity?: number;
 }
 
 /**

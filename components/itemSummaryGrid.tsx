@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Link from 'next/link';
 import { OsBuddyItemSummary } from '../types/osbuddy';
 import classNames from 'classnames';
@@ -40,23 +40,56 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
 }
 
 const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
+    const [sortByField, setSortByField] = useState('profit');
+    const [sortAscending, setSortAscending] = useState(false);
+    
+    const sortBy = (field: string) => {
+        if (sortByField === field) {
+            setSortAscending(!sortAscending);
+        } else {
+            setSortAscending(false);
+            setSortByField(field);
+        }
+    }
+
+    const items = props?.items ?? [];
+    items.sort((a, b) => {
+        const valA = a[sortByField];
+        const valB = b[sortByField];
+        if (typeof valA === 'number') {
+            return sortAscending ? a[sortByField] - b[sortByField] : b[sortByField] - a[sortByField]
+        } else {
+            return sortAscending ? valB.toString().localeCompare(valA.toString()) : valA.toString().localeCompare(valB.toString());
+        }
+    })
+
+    const SortableTh = (props) => {
+        const {fieldName, ...other} = props;
+        return (<th className='has-pointer is-hoverable' onClick={()=>sortBy(fieldName)} {...other}>
+            {props.children}
+            <span className="icon is-pulled-right">
+                {sortByField === fieldName && <i className={classNames("fas", {'fa-sort-up': sortAscending, 'fa-sort-down': !sortAscending})} />}
+            </span>
+        </th>);
+    }
+
     return (
-        <table className="table is-fullwidth is-striped is-hoverable">
+        <table className="table is-fullwidth is-hoverable">
             <thead>
                 <tr>
-                    <th colSpan={2}>Name</th>
-                    <th>Offer Price</th>
-                    <th>Sell Price</th>
-                    <th>Profit</th>
-                    <th>ROI</th>
-                    <th>Buy Quantity</th>
-                    <th>Sell Quantity</th>
-                    <th>Buy/Sell Ratio</th>
+                    <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>
+                    <SortableTh fieldName={'sell_average'}>Offer Price</SortableTh>
+                    <SortableTh fieldName={'buy_average'}>Sell Price</SortableTh>
+                    <SortableTh fieldName={'profit'}>Profit</SortableTh>
+                    <SortableTh fieldName={'returnOnInvestment'}>ROI</SortableTh>
+                    <SortableTh fieldName={'buy_quantity'}>Buy Quantity</SortableTh>
+                    <SortableTh fieldName={'sell_quantity'}>Sell Quantity</SortableTh>
+                    <SortableTh fieldName={'buySellRatio'}>Buy/Sell Ratio</SortableTh>
                     <th>Favorite</th>
                 </tr>
             </thead>
             <tbody>
-                {props.items.map(itemRow)}
+                {items.map(itemRow)}
             </tbody>
         </table>
     );

@@ -104,21 +104,67 @@ function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transa
 }
 
 const TransactionGrid = function (props: TransactionGridProps): ReactElement {
-    console.log(`Rendering ${props.transactions.length} transactions`)
+    const [sortByField, setSortByField] = useState('endTime');
+    const [sortAscending, setSortAscending] = useState(false);
     const [displayedSummary, setDisplayedSummary] = useState(null);
     const { summary } = usePriceSummary();
-    const transactions = props.transactions.sort((a, b) => b.endTime - a.endTime);
+    const transactions = props.transactions;
+    
+    const sortBy = (field: string) => {
+        if (sortByField === field) {
+            setSortAscending(!sortAscending);
+        } else {
+            setSortAscending(false);
+            setSortByField(field);
+        }
+    }
+
+    const valueExtractor = (fieldName: string, obj: Transaction<any>): any => {
+        switch (fieldName) {
+            case 'name':
+                return obj.transactionType === TransactionType.BASIC_ITEM_TRADE ? 
+                    summary?.getItem((obj as BasicItemTransaction).trades[0].itemId)?.name ?? 'Unknown'
+                    : obj[fieldName];
+            case 'quantity':
+                return obj.transactionType === TransactionType.BASIC_ITEM_TRADE ? 
+                    (obj as BasicItemTransaction).trades.reduce((acc, cur) => acc + cur.quantity, 0)
+                    : obj[fieldName];
+            default:
+                return obj[fieldName];
+        }
+    }
+
+    transactions.sort((a, b) => {
+        const valA = valueExtractor(sortByField, a);
+        const valB = valueExtractor(sortByField, b);
+        if (typeof valA === 'number') {
+            return sortAscending ? valA - valB : valB - valA
+        } else {
+            return sortAscending ? valB.toString().localeCompare(valA.toString()) : valA.toString().localeCompare(valB.toString());
+        }
+    })
+
+    const SortableTh = (props) => {
+        const {fieldName, ...other} = props;
+        return (<th className='has-pointer is-hoverable' onClick={()=>sortBy(fieldName)} {...other}>
+            {props.children}
+            <span className="icon is-pulled-right">
+                {sortByField === fieldName && <i className={classNames("fas", {'fa-sort-up': sortAscending, 'fa-sort-down': !sortAscending})} />}
+            </span>
+        </th>);
+    }
+
     return (
         <table className="table is-fullwidth is-hoverable">
             <thead>
                 <tr>
-                    <th colSpan={2}>Name</th>
-                    <th>Quantity</th>
-                    <th>Buy Price</th>
-                    <th>Sell Price</th>
-                    <th>Profit (Total)</th>
-                    <th>ROI</th>
-                    <th>Date</th>
+                    <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>
+                    <SortableTh fieldName={'quantity'}>Quantity</SortableTh>
+                    <SortableTh fieldName={'buyPrice'}>Buy Price</SortableTh>
+                    <SortableTh fieldName={'sellPrice'}>Sell Price</SortableTh>
+                    <SortableTh fieldName={'profit'}>Profit (Total)</SortableTh>
+                    <SortableTh fieldName={'ROI'}>ROI</SortableTh>
+                    <SortableTh fieldName={'endTime'}>Date</SortableTh>
                     <th>Delete</th>
                 </tr>
             </thead>
