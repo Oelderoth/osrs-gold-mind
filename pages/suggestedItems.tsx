@@ -15,7 +15,6 @@ const SuggestedItems: NextPage = function () {
     const { summary } = usePriceSummary();
     const items = summary?.getItems()
         ?.filter(filter)
-        ?.sort(profitMarginSort)
         ?? [];
 
     return (
