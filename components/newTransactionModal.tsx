@@ -2,17 +2,19 @@ import React, { ReactElement, useState } from 'react';
 import TypeaheadInput from './typeaheadInput';
 import usePriceSummary from '../hooks/usePriceSummary';
 import classNames from 'classnames';
-import { Transaction } from '../context/TransactionsContext';
+import { Transaction, BasicItemTransaction, BasicItemTrade } from '../types/transactions';
 
 interface NewTransactionModal {
     visible: boolean;
-    onTransactionCreate: (transaction: Transaction) => void;
+    onTransactionCreate: (transaction: Transaction<any>) => void;
     onCancel: () => void;
 }
 
-const createTransaction = (itemId: string, buyPrice: number, sellPrice: number, quantity: number): Transaction => {
+const createTransaction = (itemId: string, buyPrice: number, sellPrice: number, quantity: number): Transaction<BasicItemTrade> => {
     const timestamp = Date.now();
-    return new Transaction(timestamp.toString(), timestamp, timestamp, itemId, quantity, buyPrice, sellPrice);
+    const id = `${itemId}:${quantity}:${timestamp.toString()}:${timestamp.toString()}`;
+    const trade = new BasicItemTrade(id, timestamp, timestamp, itemId, quantity, buyPrice, sellPrice);
+    return new BasicItemTransaction(id, [trade]);
 }
 
 const NewTransactionModal = (props: NewTransactionModal): ReactElement => {

@@ -1,73 +1,48 @@
 import React from 'react';
 import usePersistedState, { StringMapper } from '../hooks/usePersistedState';
+import { Transaction } from '../types/transactions';
 
 const PREFIX = 'transactions-context';
 const FAVORITES_KEY = `${PREFIX}-log`;
 
-export class Transaction {
-    constructor(public id: string,
-        public buy_ts: number,
-        public sell_ts: number,
-        public itemId: string,
-        public quantity: number,
-        public buyPrice: number,
-        public sellPrice: number) {}
-
-    get profitPerItem(): number {
-        return this.sellPrice - this.buyPrice;
-    }
-
-    get profit(): number {
-        return this.profitPerItem * this.quantity;
-    }
-
-    get returnOnInvestment(): number {
-        return (this.sellPrice - this.buyPrice) / this.buyPrice * 100;
-    }
-
-    static from(itemSummary: Transaction): Transaction {
-        return Object.assign(Object.create(Transaction.prototype), itemSummary);
-    }
-}
-
 interface TransactionContext {
-    transactions: Transaction[];
-    deleteTransaction: (transaction: Transaction) => void;
-    addTransaction: (transaction: Transaction) => void;
-    addTransactions: (transactions: Transaction[]) => void;
+    transactions: Transaction<any>[];
+    deleteTransaction: (transaction: Transaction<any>) => void;
+    addTransaction: (transaction: Transaction<any>) => void;
+    addTransactions: (transactions: Transaction<any>[]) => void;
 }
 
 const context = React.createContext({ 
     transactions: [],
-    deleteTransaction: (transaction: Transaction) => {},
-    addTransaction: (transaction: Transaction) => {},
-    addTransactions: (transactions: Transaction[]) => {}
+    deleteTransaction: (transaction: Transaction<any>) => {},
+    addTransaction: (transaction: Transaction<any>) => {},
+    addTransactions: (transactions: Transaction<any>[]) => {}
 } as TransactionContext);
 
-const TransactionListMapper: StringMapper<Transaction[]>= {
-    toString(value:Transaction[]): string {
-        return JSON.stringify(value);
-    },
-    fromString(value:string): Transaction[] {
-        const objTransactionLog = JSON.parse(value);
-        return objTransactionLog?.map(objTransaction => Transaction.from(objTransaction));
-    }
-};
+// const TransactionListMapper: StringMapper<Transaction[]>= {
+//     toString(value:Transaction[]): string {
+//         return JSON.stringify(value);
+//     },
+//     fromString(value:string): Transaction[] {
+//         const objTransactionLog = JSON.parse(value);
+//         return objTransactionLog?.map(objTransaction => Transaction.from(objTransaction));
+//     }
+// };
 
 const provider = (props) => {
-    const [transactions, setTransactions] = usePersistedState(FAVORITES_KEY, [], TransactionListMapper);
+    const [transactions, setTransactions] = usePersistedState(FAVORITES_KEY, []);
 
-    const deleteTransaction = (transaction: Transaction) => {
+    const deleteTransaction = (transaction: Transaction<any>) => {
         setTransactions(transactions.filter(t => t.id !== transaction.id));
     }
 
-    const addTransaction = (transaction:Transaction) => {
+    const addTransaction = (transaction:Transaction<any>) => {
         const newTransactions = transactions.filter(t => t.id !== transaction.id);
         newTransactions.push(transaction);
         setTransactions(newTransactions);
     }
 
-    const addTransactions = (transactionsToAdd: Transaction[]) => {
+    const addTransactions = (transactionsToAdd: Transaction<any>[]) => {
         const newIds = transactionsToAdd.map(t => t.id);
         console.log(`Adding ${newIds}`)
         const newTransactions = transactions.filter(t => !newIds.includes(t.id))

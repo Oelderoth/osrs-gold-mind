@@ -1,9 +1,5 @@
-import ge from '../public/ge.json';
-import useRunelite, { RuneliteSessionStatus, RuneliteGrandExchangeTrade, useRuneliteGeHistory } from '../hooks/useRuneliteSession';
-import {Transaction, BasicItemTrade, BasicItemTransaction} from '../types/transactions';
-import NewTransactionModal from '../components/newTransactionModal.jsx';
-import TransactionGrid from '../components/transactionGrid';
-import transactionExtractor from '../components/utils/transactionExtractor';
+import { RuneliteGrandExchangeTrade } from "../../hooks/useRuneliteSession";
+import { Transaction, BasicItemTrade, BasicItemTransaction } from "../../types/transactions";
 
 const findChunks = (ge:RuneliteGrandExchangeTrade[]): [number, RuneliteGrandExchangeTrade[][]] => {
     if (ge.length < 2) {
@@ -117,8 +113,8 @@ const buildTransactionsFromChunk = (c: RuneliteGrandExchangeTrade[]): Transactio
     return new BasicItemTransaction(`${itemId}:${earliestTime}:${latestTime}`,trades);
 }
 
-const findMatches = (ge:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade>[] => {
-    let processedGe = ge.sort((a, b) => b.time.seconds - a.time.seconds);
+const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade>[] => {
+    let processedGe = geHistory.sort((a, b) => b.time.seconds - a.time.seconds);
     
     console.log(`\tFinding Chunks`)
     const [_, chunks] = findChunks(processedGe);
@@ -144,20 +140,24 @@ const findMatches = (ge:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade
     return collapsedTransactions;
 }
 
-export default (props) => {
-    const { session, login } = useRunelite();
-    const geHistory = useRuneliteGeHistory(session);
-
-    (async () => {
-        if (session.status === RuneliteSessionStatus.LOGGED_OUT) {
-            await login();
+export default function extractTransactions(geHistory: RuneliteGrandExchangeTrade[]): Transaction<BasicItemTrade>[] {
+    // Map<[itemId, price], trades[]>
+    const groupedTrades:  Map<number, RuneliteGrandExchangeTrade[]> = new Map();
+        
+    // Group trades by itemId
+    for (let trade of geHistory) {
+        if (groupedTrades.has(trade.itemId)) {
+            groupedTrades.get(trade.itemId).push(trade);
+        } else {
+            groupedTrades.set(trade.itemId, [trade]);
         }
-    })();
-    
-    const matches = transactionExtractor(geHistory)
+    }
 
-    // const matches = findMatches(ge);
-    return (<div className="section content">
-        <TransactionGrid transactions={matches} onDeleteTransaction={() => {}}/>
-    </div>);
+    const matches = [];
+    for (let [key, trades] of groupedTrades) {
+        console.log(`Finding matches for ${trades.length} trades of ${key}`)
+        matches.push(...extractTransactionsForItem(trades))
+    }
+
+    return matches;
 }

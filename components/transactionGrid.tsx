@@ -61,10 +61,10 @@ function basicItemTradeRow(summary: OsBuddyPriceSummary, deleteTransaction: (tra
                                 {trade.quantity.toLocaleString()}
                             </td>
                             <td>
-                                {trade.buyPrice.toLocaleString()}
+                                {(trade.buyPrice / trade.quantity).toLocaleString()}
                             </td>
                             <td>
-                                {trade.sellPrice.toLocaleString()}
+                                {(trade.sellPrice / trade.quantity).toLocaleString()}
                             </td>
                             <td>
                                 {`${trade.ROI.toFixed(2)}%`}
@@ -104,6 +104,7 @@ function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transa
 }
 
 const TransactionGrid = function (props: TransactionGridProps): ReactElement {
+    console.log(`Rendering ${props.transactions.length} transactions`)
     const [displayedSummary, setDisplayedSummary] = useState(null);
     const { summary } = usePriceSummary();
     const transactions = props.transactions.sort((a, b) => b.endTime - a.endTime);
