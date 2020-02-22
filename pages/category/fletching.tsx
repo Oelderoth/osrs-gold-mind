@@ -6,10 +6,6 @@ import { OsBuddyItemSummary } from '../../types/osbuddy';
 import '../../styles.scss';
 import ItemSummaryGrid from '../../components/itemSummaryGrid';
 
-function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary): number {
-    return (itemB.buy_average - itemB.sell_average) - (itemA.buy_average - itemA.sell_average);
-}
-
 const itemWhitelist = new Set<String|RegExp|number>([
     /(long|short)bow(\s\(.+?\))?/ig,
     /arrow$/ig
@@ -34,7 +30,6 @@ const RunesCategoryPage: NextPage = function () {
     const { summary } = usePriceSummary();
     const items = summary?.getItems()
         ?.filter(filter)
-        ?.sort(profitMarginSort)
         ?? [];
 
     return (

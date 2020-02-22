@@ -1,15 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { NextPage } from 'next';
 import usePriceSummary from '../hooks/usePriceSummary';
-import { OsBuddyItemSummary } from '../types/osbuddy';
 
 import '../styles.scss';
 import ItemSummaryGrid from '../components/itemSummaryGrid';
 import { ItemsContext } from '../context/ItemsContext';
-
-function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary): number {
-    return (itemB.buy_average - itemB.sell_average) - (itemA.buy_average - itemA.sell_average);
-}
 
 const FavoriteItems: NextPage = function () {
     const { favorites } = useContext(ItemsContext);
@@ -19,7 +14,6 @@ const FavoriteItems: NextPage = function () {
     const { summary } = usePriceSummary();
     const items = summary?.getItems()
         ?.filter(item => cachedFavorites?.has(item.id.toString()) ?? false)
-        ?.sort(profitMarginSort)
         ?? [];
 
     return (
