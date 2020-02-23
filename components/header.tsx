@@ -18,7 +18,7 @@ export default () => {
             <div className="navbar-brand">
                 <div className="navbar-item">
                     <span className="home-icon icon">
-                        <i className="fas fa-coins fa-3x"/>
+                        <i className="fas fa-coins fa-3x" />
                     </span>
                     <h1 className="title">
                         GoldMind
@@ -27,7 +27,7 @@ export default () => {
                 <a role="button" className={classNames("navbar-burger", {
                     'is-active': isBurgerActive
                 })} aria-label="menu" aria-expanded="false" data-target="navbarBasicExample"
-                onClick={() => setBurgerActive(!isBurgerActive)}>
+                    onClick={() => setBurgerActive(!isBurgerActive)}>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
                     <span aria-hidden="true"></span>
@@ -38,9 +38,16 @@ export default () => {
             })}>
                 <div className="navbar-start">
                     <Link href="/favoriteItems"><a className="navbar-item">Favorites</a></Link>
-                    <Link href="/transactions"><a className="navbar-item">Transaction Log</a></Link>
                     <div className="navbar-item has-dropdown is-hoverable">
-                    <Link href="/suggestedItems"><a className="navbar-link">Flip Finder</a></Link>
+                        <Link href="/transactions"><a className="navbar-link">Transactions</a></Link>
+                        <div className="navbar-dropdown">
+                            <Link href="/transactions"><a className="navbar-item">Transaction Log</a></Link>
+                            <div className="navbar-divider" />
+                            <Link href="/mostProfitable"><a className="navbar-item">Most Profitable Items</a></Link>
+                        </div>
+                    </div>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <Link href="/suggestedItems"><a className="navbar-link">Flip Finder</a></Link>
                         <div className="navbar-dropdown">
                             <Link href="/suggestedItems"><a className="navbar-item">Suggested Items</a></Link>
                             <Link href="/allItems"><a className="navbar-item">All Items</a></Link>
@@ -77,13 +84,13 @@ export default () => {
                                 <span className="icon is-small is-left">
                                     <i className="fas fa-search" />
                                 </span>
-                                <TypeaheadInput className="input" type="text" placeholder="Search for items..." suggestions={itemNames} 
+                                <TypeaheadInput className="input" type="text" placeholder="Search for items..." suggestions={itemNames}
                                     onChange={(event) => setSearchValue(event.target.value)}
                                     onKeyUp={(event) => {
                                         if (event.keyCode === 13) {
                                             router.push({
                                                 pathname: '/search',
-                                                query: {q: event.currentTarget.value}
+                                                query: { q: event.currentTarget.value }
                                             })
                                             event.currentTarget.blur();
                                         }
@@ -96,13 +103,14 @@ export default () => {
                                             console.log(suggestedItem);
                                             router.push({
                                                 pathname: '/item',
-                                                query: {id: suggestedItem.id}
+                                                query: { id: suggestedItem.id }
                                             });
-                                        }}
-                                    }/>
+                                        }
+                                    }
+                                    } />
                             </div>
                             <div className="control">
-                                <Link href={{pathname: "/search", query:{q:searchValue}}} >
+                                <Link href={{ pathname: "/search", query: { q: searchValue } }} >
                                     <a className="button is-info">
                                         Search
                                     </a>
