@@ -17,6 +17,9 @@ const Transactions: NextPage = function () {
     const [newTransactionModalVisible, setNewTransactionModalVisible] = useState(false);
     const [runeliteModalVisible, setRuneliteModalVisible] = useState(false);
     const { session, login } = useRunelite();
+
+    const totalProfit = transactions.reduce((acc, cur) => acc + cur.profit, 0);
+
     return (
         <Fragment>
             <div className="section">
@@ -24,6 +27,13 @@ const Transactions: NextPage = function () {
                     <div>
                         <h1 className="title">Transactions</h1>
                         <h2 className="subtitle">Transaction History</h2>
+                    </div>
+                    <div className='profit-summary has-text-centered'>
+                        <h1 className={classNames("title",{
+                            'has-text-primary': totalProfit >= 0,
+                            'has-text-danger': totalProfit < 0
+                        })}>{totalProfit >= 0 ? '+' : null}{totalProfit.toLocaleString()}</h1>
+                        <h2 className="subtitle">33 Transactions</h2>
                     </div>
                     <div className="buttons">
                         <button className={classNames("button is-outlined", {
