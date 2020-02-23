@@ -149,7 +149,7 @@ const MostProfitable: NextPage = function () {
                                     'has-text-success': itemSummary.avgROI >= 0,
                                     'has-text-danger': itemSummary.avgROI < 0
                                 })
-                            }>{itemSummary.avgROI >= 0 ? '+' : null}{itemSummary.avgROI.toLocaleString(undefined, {maximumFractionDigits: 2})}</span>
+                            }>{itemSummary.avgROI >= 0 ? '+' : null}{(itemSummary.avgROI * 100).toLocaleString(undefined, {maximumFractionDigits: 2})}%</span>
                         </td>
                         <td>
                             <FavoriteStar id={itemSummary.itemId}/>
