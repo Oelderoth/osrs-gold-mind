@@ -5,7 +5,7 @@ const PREFIX = 'item-context';
 const FAVORITES_KEY = `${PREFIX}-favorites`;
 
 const context = React.createContext({ 
-    favorites: new Set(), 
+    favorites: new Set<string>(), 
     toggleFavorite: (itemId: string) => { } 
 });
 

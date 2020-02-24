@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import TypeaheadInput from '../components/typeaheadInput';
 import usePriceSummary from '../hooks/usePriceSummary';
 import { useRouter } from 'next/router';
-import { suggestedItemFilter } from '../filters';
 
 export default () => {
     const [searchValue, setSearchValue] = useState();
@@ -59,7 +58,7 @@ export default () => {
                                 <div className="navbar-dropdown">
                                     <Link href="/category/runes"><a className="navbar-item">Runes</a></Link>
                                     <Link href="/category/construction"><a className="navbar-item">Construction</a></Link>
-                                    <Link href="/category/herblore"><a className="navbar-item">Crafting</a></Link>
+                                    <Link href="/category/crafting"><a className="navbar-item">Crafting</a></Link>
                                     <Link href="/category/farming"><a className="navbar-item">Farming</a></Link>
                                     <Link href="/category/fletching"><a className="navbar-item">Fletching</a></Link>
                                     <Link href="/category/herblore"><a className="navbar-item">Herblore</a></Link>

@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import './style.scss';
-import { suggestedItemFilter } from '../../filters';
 
 interface TypeaheadProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     suggestions: string[];

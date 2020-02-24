@@ -1,29 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { NextPage } from 'next';
-import usePriceSummary from '../hooks/usePriceSummary';
-
-import '../styles.scss';
-import ItemSummaryGrid from '../components/itemSummaryGrid';
+import React, { useContext, useState } from 'react';
+import FilteringItemPage, { ItemFilter } from '../components/filteringItemPage';
 import { ItemsContext } from '../context/ItemsContext';
+import { OsBuddyItemSummary } from '../types/osbuddy';
+import '../styles.scss';
 
-const FavoriteItems: NextPage = function () {
+const favoriteFilter = (favorites: Set<string>): ItemFilter => {
+    return (item: OsBuddyItemSummary) => favorites.has(item.id.toString());
+} 
+
+export default function () {
     const { favorites } = useContext(ItemsContext);
-    // Cache the favorites on first load so that items may be un-favorited but won't disppear until reloading the page
     const [cachedFavorites] = useState(favorites);
 
-    const { summary } = usePriceSummary();
-    const items = summary?.getItems()
-        ?.filter(item => cachedFavorites?.has(item.id.toString()) ?? false)
-        ?? [];
-
-    return (
-        <div className="section">
-            <h1 className="title">Items</h1>
-            <h2 className="subtitle">Favorite Items</h2>
-
-            <ItemSummaryGrid items={items} />
-        </div>
-    );
+    return (<FilteringItemPage subtitle={'Highest Margin Items'} filter={favoriteFilter(cachedFavorites)} />)
 }
-
-export default FavoriteItems;

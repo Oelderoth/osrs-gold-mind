@@ -1,25 +1,17 @@
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { NextPage } from 'next';
-import usePriceSummary from '../hooks/usePriceSummary';
-import { highestMarginFilter as filter } from '../filters';
-
+import FilteringItemPage from '../components/filteringItemPage';
+import { OsBuddyItemSummary } from '../types/osbuddy';
 import '../styles.scss';
-import ItemSummaryGrid from '../components/itemSummaryGrid';
 
-const HighestMargin: NextPage = function () {
-    const { summary } = usePriceSummary();
-    const items = summary?.getItems()
-        ?.filter(filter)
-        ?? [];
-
-    return (
-        <div className="section">
-            <h1 className="title">Items</h1>
-            <h2 className="subtitle">Highest Margin</h2>
-
-            <ItemSummaryGrid items={items} />
-        </div>
-    );
+/**
+ * Returns items with up to date buy and sell prices, and a buy or sell quantity >= 5000
+ */
+function highestMarginFilter(itemSummary:OsBuddyItemSummary) : boolean {
+    return (itemSummary.sell_average > 0 && itemSummary.buy_average > 0) 
+    && (itemSummary.buy_quantity >= 1 || itemSummary.sell_quantity >= 1);
 }
 
-export default HighestMargin;
+export default function () {
+    return (<FilteringItemPage subtitle={'Highest Margin Items'} filter={highestMarginFilter} />)
+}

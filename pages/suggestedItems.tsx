@@ -1,30 +1,19 @@
-import React, { ReactElement } from 'react';
-import { NextPage } from 'next';
-import usePriceSummary from '../hooks/usePriceSummary';
+import React from 'react';
+import FilteringItemPage from '../components/filteringItemPage';
 import { OsBuddyItemSummary } from '../types/osbuddy';
-import { suggestedItemFilter as filter } from '../filters';
-
 import '../styles.scss';
-import ItemSummaryGrid from '../components/itemSummaryGrid';
 
-function profitMarginSort(itemA: OsBuddyItemSummary, itemB: OsBuddyItemSummary): number {
-    return (itemB.buy_average - itemB.sell_average) - (itemA.buy_average - itemA.sell_average);
+/**
+ * Returns items with up to date buy and sell prices, and a buy or sell quantity >= 5000
+ */
+function suggestedItemFilter(itemSummary:OsBuddyItemSummary) : boolean {
+    return (itemSummary.sell_average > 150) 
+    && (itemSummary.buy_quantity >= 2 && itemSummary.sell_quantity >= 2)
+    && (itemSummary.overall_average <= 50000000)
+    && ((itemSummary.buy_average - itemSummary.sell_average)/itemSummary.sell_average > 0.01)
+    && ((itemSummary.sell_quantity / itemSummary.buy_quantity) > 0.5);
 }
 
-const SuggestedItems: NextPage = function () {
-    const { summary } = usePriceSummary();
-    const items = summary?.getItems()
-        ?.filter(filter)
-        ?? [];
-
-    return (
-        <div className="section">
-            <h1 className="title">Items</h1>
-            <h2 className="subtitle">Suggested Items</h2>
-
-            <ItemSummaryGrid items={items} />
-        </div>
-    );
+export default function () {
+    return (<FilteringItemPage subtitle={'Suggested Items'} filter={suggestedItemFilter} />)
 }
-
-export default SuggestedItems;
