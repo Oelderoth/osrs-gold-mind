@@ -1,8 +1,7 @@
 import React from 'react';
-import { NextPage } from 'next';
-import FilteringItemPage from '../components/filteringItemPage';
-import { OsBuddyItemSummary } from '../types/osbuddy';
-import '../styles.scss';
+
+import FilteringItemPage from 'components/FilteringItemPage';
+import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 /**
  * Returns items with up to date buy and sell prices, and a buy or sell quantity >= 5000

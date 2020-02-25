@@ -1,11 +1,14 @@
 import React, { ReactElement, useState } from 'react';
+
 import Link from 'next/link';
-import { OsBuddyPriceSummary } from '../types/osbuddy';
+
 import classNames from 'classnames';
 
-import '../styles.scss';
-import usePriceSummary from '../hooks/usePriceSummary';
-import { Transaction, BasicItemTrade, TransactionType, BasicItemTransaction } from '../types/transactions';
+import usePriceSummary from 'hooks/usePriceSummary';
+import { OsBuddyPriceSummary } from 'types/OsBuddy';
+import {
+    BasicItemTrade, BasicItemTransaction, Transaction, TransactionType
+} from 'types/Transactions';
 
 interface TransactionGridProps {
     transactions: Transaction<any>[];

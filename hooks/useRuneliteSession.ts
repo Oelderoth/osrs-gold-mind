@@ -1,6 +1,8 @@
-import useSessionState from "./useSessionState";
+import { useEffect, useState } from 'react';
+
 import generateUuid from 'uuid/v4';
-import { useState, useEffect } from "react";
+
+import useSessionState from 'hooks/useSessionState';
 
 const RUNELITE_VERSION = '1.6.7';
 const RUNELITE_URL = `http://api.runelite.net/runelite-${RUNELITE_VERSION}`;

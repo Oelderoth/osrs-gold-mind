@@ -1,14 +1,14 @@
-import React, { ReactElement } from 'react';
-import { NextPage } from 'next';
-import { useRouter, NextRouter } from 'next/router';
-import usePriceSummary from '../hooks/usePriceSummary';
-import { OsBuddyItemSummary, OsBuddyPriceSummary } from '../types/osbuddy';
-import { highVolumeFilter as filter } from '../filters';
-import queryString from 'query-string';
-import escapeStringRegexp from 'escape-string-regexp';
+import React from 'react';
 
-import '../styles.scss';
-import ItemSummaryGrid from '../components/itemSummaryGrid';
+import { NextPage } from 'next';
+import { NextRouter, useRouter } from 'next/router';
+
+import escapeStringRegexp from 'escape-string-regexp';
+import queryString from 'query-string';
+
+import ItemSummaryGrid from 'components/ItemSummaryGrid';
+import usePriceSummary from 'hooks/usePriceSummary';
+import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 function getQuery(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 

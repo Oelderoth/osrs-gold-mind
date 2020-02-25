@@ -1,5 +1,5 @@
-import { RuneliteGrandExchangeTrade } from "../../hooks/useRuneliteSession";
-import { Transaction, BasicItemTrade, BasicItemTransaction } from "../../types/transactions";
+import { RuneliteGrandExchangeTrade } from 'hooks/useRuneliteSession';
+import { BasicItemTrade, BasicItemTransaction, Transaction } from 'types/Transactions';
 
 const findChunks = (ge:RuneliteGrandExchangeTrade[]): [number, RuneliteGrandExchangeTrade[][]] => {
     if (ge.length < 2) {

@@ -1,8 +1,10 @@
 import React, { ReactElement, useState } from 'react';
-import TypeaheadInput from './typeaheadInput';
-import usePriceSummary from '../hooks/usePriceSummary';
+
 import classNames from 'classnames';
-import { Transaction, BasicItemTransaction, BasicItemTrade } from '../types/transactions';
+
+import TypeaheadInput from 'components/TypeaheadInput';
+import usePriceSummary from 'hooks/usePriceSummary';
+import { BasicItemTrade, BasicItemTransaction, Transaction } from 'types/Transactions';
 
 interface NewTransactionModal {
     visible: boolean;

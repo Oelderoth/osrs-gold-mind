@@ -1,6 +1,7 @@
 import React from 'react';
-import FilteringItemPage from '../../components/filteringItemPage';
-import whitelistItemFilter from '../../utils/whitelistItemFilter';
+
+import FilteringItemPage from 'components/FilteringItemPage';
+import whitelistItemFilter from 'utils/WhitelistItemFilter';
 
 const itemWhitelist = new Set<String|RegExp|number>([
     /\s+impling\sjar$/i,

@@ -1,8 +1,7 @@
 import React, { ReactElement } from 'react';
-import { OsBuddyItemHistoryEntry, OsBuddyItemSummary } from '../types/osbuddy';
 
-import '../styles.scss';
-import useItemPriceHistory from '../hooks/useItemPriceHistory';
+import useItemPriceHistory from 'hooks/useItemPriceHistory';
+import { OsBuddyItemHistoryEntry } from 'types/OsBuddy';
 
 interface ItemHistoryTableProps {
     id: number | string;

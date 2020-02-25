@@ -1,6 +1,6 @@
 import React from 'react';
-import FilteringItemPage from '../components/filteringItemPage';
-import '../styles.scss';
+
+import FilteringItemPage from 'components/FilteringItemPage';
 
 const allItemsFilter = (): boolean => true
 

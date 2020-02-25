@@ -1,10 +1,11 @@
 import React, { ReactElement, useState } from 'react';
+
 import Link from 'next/link';
-import { OsBuddyItemSummary } from '../types/osbuddy';
+
 import classNames from 'classnames';
 
-import '../styles.scss';
-import FavoriteStar from './favoriteStar';
+import FavoriteStar from 'components/FavoriteStar';
+import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 interface ItemGridProps {
     items: OsBuddyItemSummary[];

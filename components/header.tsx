@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+
 import Link from 'next/link';
-import classNames from 'classnames';
-import TypeaheadInput from '../components/typeaheadInput';
-import usePriceSummary from '../hooks/usePriceSummary';
 import { useRouter } from 'next/router';
+
+import classNames from 'classnames';
+
+import TypeaheadInput from 'components/TypeaheadInput';
+import usePriceSummary from 'hooks/usePriceSummary';
 
 export default () => {
     const [searchValue, setSearchValue] = useState();

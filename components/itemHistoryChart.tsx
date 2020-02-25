@@ -1,10 +1,10 @@
-import React, { ReactElement, useState, Fragment } from 'react';
-import useItemPriceHistory from '../hooks/useItemPriceHistory';
-import { OsBuddyItemHistoryEntry } from '../types/osbuddy';
-import { Line, Bar } from 'react-chartjs-2';
-import classNames from 'classnames';
+import React, { Fragment, ReactElement, useState } from 'react';
 
-import '../styles.scss';
+import classNames from 'classnames';
+import { Bar, Line } from 'react-chartjs-2';
+
+import useItemPriceHistory from 'hooks/useItemPriceHistory';
+import { OsBuddyItemHistoryEntry } from 'types/OsBuddy';
 
 interface ItemHistoryChartProps {
     id: number | string;

@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react';
-import ItemSummaryGrid from '../components/itemSummaryGrid';
-import usePriceSummary from '../hooks/usePriceSummary';
-import { OsBuddyItemSummary } from '../types/osbuddy';
 
+import ItemSummaryGrid from 'components/ItemSummaryGrid';
+import usePriceSummary from 'hooks/usePriceSummary';
+import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 export type ItemFilter = (item: OsBuddyItemSummary) => boolean;
 

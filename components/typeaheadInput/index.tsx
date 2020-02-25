@@ -1,8 +1,9 @@
+import './style.scss';
+
 import React, { ReactElement, useState } from 'react';
+
 import classNames from 'classnames';
 import escapeStringRegexp from 'escape-string-regexp';
-
-import './style.scss';
 
 interface TypeaheadProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     suggestions: string[];

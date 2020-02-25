@@ -1,5 +1,5 @@
-import { OsBuddyItemSummary } from "../types/osbuddy";
-import { ItemFilter } from "../components/filteringItemPage";
+import { ItemFilter } from 'components/FilteringItemPage';
+import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 const whitelistItemFilter = (whitelist: Set<String | RegExp | number>):ItemFilter => {
     return (item: OsBuddyItemSummary): boolean => {

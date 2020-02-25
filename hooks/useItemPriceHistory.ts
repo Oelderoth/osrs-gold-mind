@@ -1,6 +1,7 @@
-import { OsBuddyItemHistoryEntry } from '../types/osbuddy';
-import { useState, useEffect } from 'react';
-import useCache from './useCache';
+import { useEffect, useState } from 'react';
+
+import { OsBuddyItemHistoryEntry } from 'types/OsBuddy';
+import useCache from 'hooks/useCache';
 
 interface useItemPriceHistoryResult {
     history: OsBuddyItemHistoryEntry[];

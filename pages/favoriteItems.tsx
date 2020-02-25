@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
-import FilteringItemPage, { ItemFilter } from '../components/filteringItemPage';
-import { ItemsContext } from '../context/ItemsContext';
-import { OsBuddyItemSummary } from '../types/osbuddy';
-import '../styles.scss';
+
+import FilteringItemPage, { ItemFilter } from 'components/FilteringItemPage';
+import { ItemsContext } from 'context/ItemsContext';
+import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 const favoriteFilter = (favorites: Set<string>): ItemFilter => {
     return (item: OsBuddyItemSummary) => favorites.has(item.id.toString());

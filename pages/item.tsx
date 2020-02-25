@@ -1,14 +1,15 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { NextPage } from 'next';
-import { useRouter, NextRouter } from 'next/router';
-import usePriceSummary from '../hooks/usePriceSummary';
-import queryString from 'query-string';
-import classNames from 'classnames';
+import React from 'react';
 
-import '../styles.scss';
-import ItemHistoryChart from '../components/itemHistoryChart';
-import ItemHistoryTable from '../components/itemHistoryTable';
-import FavoriteStar from '../components/favoriteStar';
+import { NextPage } from 'next';
+import { NextRouter, useRouter } from 'next/router';
+
+import classNames from 'classnames';
+import queryString from 'query-string';
+
+import FavoriteStar from 'components/FavoriteStar';
+import ItemHistoryChart from 'components/ItemHistoryChart';
+import ItemHistoryTable from 'components/ItemHistoryTable';
+import usePriceSummary from 'hooks/usePriceSummary';
 
 function getItemId(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -31,11 +32,11 @@ const HighVolume: NextPage = function () {
         <div className="section">
             <h1 className="title">
                 {item?.name ?? "Unknown Item"}
-                <FavoriteStar className="is-pulled-right" id={item?.id} />                    
+                <FavoriteStar className="is-pulled-right" id={item?.id} />
             </h1>
             <div className="tile is-ancestor">
                 <div className="tile item-icon-big">
-                    { item && <img className="image is-96x96" src={`http://services.runescape.com/m=itemdb_oldschool/obj_big.gif?id=${item.id}`} /> }
+                    {item && <img className="image is-96x96" src={`http://services.runescape.com/m=itemdb_oldschool/obj_big.gif?id=${item.id}`} />}
                 </div>
                 <div className="tile is-vertical is-parent">
                     <div className="tile is-child is-marginless is-flex item-information-row">
