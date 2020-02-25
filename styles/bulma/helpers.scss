@@ -1,47 +1,47 @@
 .is-space-between {
-    justify-content: space-between;
+    justify-content: space-between !important;
 }
 
 .is-align-flex-start {
-    align-items: flex-start;
+    align-items: flex-start !important;
 }
 
 .is-flex-end {
-    justify-content: flex-end;
+    justify-content: flex-end !important;
 }
 
 .is-align-center {
-    align-items: center;
+    align-items: center !important;
 }
 
 .is-flex-direction-column {
-    flex-direction: column;
+    flex-direction: column !important;
 }
 
 .is-flex-none {
-    flex: none;
+    flex: none !important;
 }
 
 .is-max-height-100 {
-    max-height:100%;
+    max-height:100% !important;
 }
 
 .is-overflow-hidden {
-    overflow: hidden;
+    overflow: hidden !important;
 }
 
 .is-overflow-auto {
-    overflow: auto;
+    overflow: auto !important;
 }
 
 .is-overflow-visible {
-    overflow: visible;
+    overflow: visible !important;
 }
 
 .has-pointer {
-    cursor: pointer;
+    cursor: pointer !important;
 }
 
 .is-background {
-    background-color: $background;
+    background-color: $background !important;
 }

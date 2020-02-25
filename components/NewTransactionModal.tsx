@@ -1,8 +1,8 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useRef, useState, RefObject } from 'react';
 
 import classNames from 'classnames';
 
-import TypeaheadInput from 'components/TypeaheadInput';
+import TypeaheadInput, { TypeaheadInputElement } from 'components/TypeaheadInput';
 import usePriceSummary from 'hooks/usePriceSummary';
 import { BasicItemTrade, BasicItemTransaction, Transaction } from 'types/Transactions';
 
@@ -36,9 +36,26 @@ const NewTransactionModal = (props: NewTransactionModal): ReactElement => {
             setValid(valid);
     };
 
-    // Since we re-render anytime one of the state value changes, validate on re-render
-    // If the validity has not changed, this is a no-op
-    validate();
+    useEffect(() => validate(), [itemId, buyPrice, sellPrice, quantity, summary]);
+
+    // If the visibility changes to false, clear all inputs
+    useEffect(() => {
+        if (!props.visible) {
+            searchRef.current.value = '';
+            buyPriceRef.current.value = '0';
+            sellPriceRef.current.value = '0';
+            quantityRef.current.value = '0';
+            setItemId(null);
+            setBuyPrice(0);
+            setSellPrice(0);
+            setQuantity(0);
+        }
+    }, [props.visible])
+
+    const searchRef:RefObject<TypeaheadInputElement> = useRef(null);
+    const buyPriceRef:RefObject<HTMLInputElement> = useRef(null);
+    const sellPriceRef:RefObject<HTMLInputElement> = useRef(null);
+    const quantityRef:RefObject<HTMLInputElement> = useRef(null);
 
     return (<div className={classNames('modal', {
         'is-active': props.visible
@@ -52,7 +69,7 @@ const NewTransactionModal = (props: NewTransactionModal): ReactElement => {
                         <span className="icon is-small is-left">
                             <i className="fas fa-search" />
                         </span>
-                        <TypeaheadInput className="input" type="text" placeholder="Search for item..." suggestions={itemNames} onSuggestionSelect={
+                        <TypeaheadInput ref={searchRef} className="input" type="text" placeholder="Search for item..." suggestions={itemNames} onSuggestionSelect={
                             (suggestion: string, setValue) => {
                                 setValue(suggestion);
                                 setItemId(summary?.getItemByName(suggestion)?.id);
@@ -64,19 +81,19 @@ const NewTransactionModal = (props: NewTransactionModal): ReactElement => {
                 <div className="panel-block is-flex is-space-between">
                     <div className="field is-marginless">
                         <label className="label is-small">Buy Price</label>
-                        <input className="input is-small" type="number" min="0" defaultValue={0} onChange={(event) => {
+                        <input ref={buyPriceRef} className="input is-small" type="number" min="0" defaultValue={0} onChange={(event) => {
                             setBuyPrice(parseInt(event.currentTarget.value));
                         }}/>
                     </div>
                     <div className="field is-marginless">
                         <label className="label is-small">Sell Price</label>
-                        <input className="input is-small" type="number" min="0" defaultValue={0} onChange={(event) => {
+                        <input ref={sellPriceRef} className="input is-small" type="number" min="0" defaultValue={0} onChange={(event) => {
                             setSellPrice(parseInt(event.currentTarget.value));
                         }}/>
                     </div>
                     <div className="field is-marginless">
                         <label className="label is-small">Quantity</label>
-                        <input className="input is-small" type="number" min="0" defaultValue={0} onChange={(event) => {
+                        <input ref={quantityRef} className="input is-small" type="number" min="0" defaultValue={0} onChange={(event) => {
                             setQuantity(parseInt(event.currentTarget.value));
                         }}/>
                     </div>

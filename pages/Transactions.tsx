@@ -54,23 +54,21 @@ const Transactions: NextPage = function () {
                 } />
             </div>
 
-            {// Only create a transaction modal when visible, so that fields are cleared after closing
-            newTransactionModalVisible && <NewTransactionModal visible={newTransactionModalVisible} 
-            onCancel={() => setNewTransactionModalVisible(false)}
-            onTransactionCreate={transaction => {
-                addTransaction(transaction);
-                setNewTransactionModalVisible(false);
-            }}/>}
+            <NewTransactionModal visible={newTransactionModalVisible} 
+                onCancel={() => setNewTransactionModalVisible(false)}
+                onTransactionCreate={transaction => {
+                    addTransaction(transaction);
+                    setNewTransactionModalVisible(false);
+                }}/>
 
-            {// Only create a transaction modal when visible, so that fields are cleared after closing
-            runeliteModalVisible && <RuneliteImportModal visible={runeliteModalVisible} 
+            <RuneliteImportModal visible={runeliteModalVisible} 
             session={session}
             transactions={transactions}
             onCancel={() => setRuneliteModalVisible(false)}
             onTransactionsImport={(transactionsToImport) => {
                 addTransactions(transactionsToImport);
                 setRuneliteModalVisible(false);
-            }}/>}
+            }}/>
         </Fragment>
     );
 }

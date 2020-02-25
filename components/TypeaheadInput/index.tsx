@@ -1,6 +1,6 @@
 import './style.scss';
 
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useState, RefObject, useImperativeHandle } from 'react';
 
 import classNames from 'classnames';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -9,6 +9,11 @@ interface TypeaheadProps extends React.DetailedHTMLProps<React.InputHTMLAttribut
     suggestions: string[];
     maxSuggestions?: number;
     onSuggestionSelect?: (suggestion: string, setValue?:(value: String) => void) => void;
+}
+
+export interface TypeaheadInputElement {
+    value: string;
+    setValue: (val: string) => void;
 }
 
 const typeaheadOnFocus = (setFocused: (isFocused: boolean) => void,
@@ -60,12 +65,24 @@ const suggestionFilter = (value: string): (suggestion: string) => boolean => {
     return (suggestion) => regex.test(suggestion);
 }
 
-const TypeaheadInput = (props: TypeaheadProps): ReactElement => {
+const TypeaheadInput = (props: TypeaheadProps, ref: RefObject<TypeaheadInputElement>): ReactElement => {
     const [isFocused, setFocused] = useState(false);
     const [value, setValue] = useState('');
     const { suggestions, onFocus, onBlur, onChange, onSuggestionSelect, maxSuggestions = 5, ...others } = props;
 
     const filteredSuggestions = suggestions.filter(suggestionFilter(value)).sort((a, b) => a.localeCompare(b)).slice(0, maxSuggestions);
+
+    useImperativeHandle(ref, () => ({
+        set value(val: string) {
+            setValue(val);
+        },
+        get value(): string {
+            return value
+        },
+        setValue: (value: string) => {
+            setValue(value);
+        }
+    }));
 
     return (<span className='typeahead'>
         <input {...others}
@@ -79,4 +96,4 @@ const TypeaheadInput = (props: TypeaheadProps): ReactElement => {
     </span>);
 }
 
-export default TypeaheadInput;
+export default React.forwardRef(TypeaheadInput);
