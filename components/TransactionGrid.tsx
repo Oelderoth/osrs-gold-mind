@@ -43,7 +43,7 @@ function basicItemTradeRow(summary: OsBuddyPriceSummary, deleteTransaction: (tra
                 }}><i className='fas fa-trash' /></span>
             </td>
         </tr>
-        <tr className={classNames("is-detail", {'is-hidden': !showDetails})}>
+        <tr className={classNames("is-background", {'is-hidden': !showDetails})}>
             <td></td>
             <td colSpan={8}>
                 <table className="table is-bordered is-striped is-hoverable is-fullwidth is-narrow">
