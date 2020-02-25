@@ -5,6 +5,8 @@ import React, { ReactElement, useState, RefObject, useImperativeHandle } from 'r
 import classNames from 'classnames';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import itemSearchFilter from 'utils/ItemSearchFilter';
+
 interface TypeaheadProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     suggestions: string[];
     maxSuggestions?: number;
@@ -56,21 +58,12 @@ const suggestionBoldMatch = (value: string, onSuggestionSelect: (suggestion: str
     };
 }
 
-const suggestionFilter = (value: string): (suggestion: string) => boolean => {
-    if (!value || value.length == 0) return () => false;
-
-    const escaped = escapeStringRegexp(value).replace(/\s+/g, '.+?');
-    const regex = new RegExp(escaped, 'i')
-
-    return (suggestion) => regex.test(suggestion);
-}
-
 const TypeaheadInput = (props: TypeaheadProps, ref: RefObject<TypeaheadInputElement>): ReactElement => {
     const [isFocused, setFocused] = useState(false);
     const [value, setValue] = useState('');
     const { suggestions, onFocus, onBlur, onChange, onSuggestionSelect, maxSuggestions = 5, ...others } = props;
 
-    const filteredSuggestions = suggestions.filter(suggestionFilter(value)).sort((a, b) => a.localeCompare(b)).slice(0, maxSuggestions);
+    const filteredSuggestions = suggestions.filter(itemSearchFilter(value)).sort((a, b) => a.localeCompare(b)).slice(0, maxSuggestions);
 
     useImperativeHandle(ref, () => ({
         set value(val: string) {

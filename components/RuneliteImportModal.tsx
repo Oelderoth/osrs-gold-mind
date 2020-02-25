@@ -3,14 +3,13 @@ import React, { ReactElement, useEffect, useState, RefObject, useRef } from 'rea
 import Link from 'next/link';
 
 import classNames from 'classnames';
-import escapeStringRegexp from 'escape-string-regexp';
 
 import usePriceSummary from 'hooks/usePriceSummary';
 import { RuneliteSession, useRuneliteGeHistory } from 'hooks/useRuneliteSession';
 import { OsBuddyPriceSummary } from 'types/OsBuddy';
 import { BasicItemTrade, Transaction } from 'types/Transactions';
+import itemSearchFilter from 'utils/ItemSearchFilter';
 import transactionExtractor from 'utils/TransactionExtractor';
-import { TypeaheadInputElement } from './TypeaheadInput';
 
 interface RuneliteImportModalProps {
     visible: boolean;
@@ -21,12 +20,10 @@ interface RuneliteImportModalProps {
 }
 
 const itemNameFilter = (summary: OsBuddyPriceSummary,value: string): (trade: Transaction<BasicItemTrade>) => boolean => {
-    if (!summary || !value || value.length == 0) return () => true;
-
-    const escaped = escapeStringRegexp(value).replace(/\s+/g, '.+?');
-    const regex = new RegExp(escaped, 'i')
-    
-    return (trade) => regex.test(summary.getItem(trade.trades[0].itemId)?.name);
+    const searchFilter = itemSearchFilter(value);
+    return (trade: Transaction<BasicItemTrade>) => {
+        return searchFilter(summary?.getItem(trade.trades[0].itemId)?.name);
+    }
 }
 
 const RuneliteImportModal = (props: RuneliteImportModalProps): ReactElement => {
