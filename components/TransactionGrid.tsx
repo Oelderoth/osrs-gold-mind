@@ -9,6 +9,7 @@ import { OsBuddyPriceSummary } from 'types/OsBuddy';
 import {
     BasicItemTrade, BasicItemTransaction, Transaction, TransactionType
 } from 'types/Transactions';
+import { SortableTable, SortableTh, SortableRows } from './SortableTable';
 
 interface TransactionGridProps {
     transactions: Transaction<any>[];
@@ -107,22 +108,10 @@ function transactionRow(summary: OsBuddyPriceSummary, deleteTransaction: (transa
 }
 
 const TransactionGrid = function (props: TransactionGridProps): ReactElement {
-    const [sortByField, setSortByField] = useState('endTime');
-    const [sortAscending, setSortAscending] = useState(false);
     const [displayedSummary, setDisplayedSummary] = useState(null);
     const { summary } = usePriceSummary();
-    const transactions = props.transactions;
-    
-    const sortBy = (field: string) => {
-        if (sortByField === field) {
-            setSortAscending(!sortAscending);
-        } else {
-            setSortAscending(false);
-            setSortByField(field);
-        }
-    }
 
-    const valueExtractor = (fieldName: string, obj: Transaction<any>): any => {
+    const valueExtractor = (obj: Transaction<any>, fieldName: string): any => {
         switch (fieldName) {
             case 'name':
                 return obj.transactionType === TransactionType.BASIC_ITEM_TRADE ? 
@@ -137,28 +126,8 @@ const TransactionGrid = function (props: TransactionGridProps): ReactElement {
         }
     }
 
-    transactions.sort((a, b) => {
-        const valA = valueExtractor(sortByField, a);
-        const valB = valueExtractor(sortByField, b);
-        if (typeof valA === 'number') {
-            return sortAscending ? valA - valB : valB - valA
-        } else {
-            return sortAscending ? valB.toString().localeCompare(valA.toString()) : valA.toString().localeCompare(valB.toString());
-        }
-    })
-
-    const SortableTh = (props) => {
-        const {fieldName, ...other} = props;
-        return (<th className='has-pointer is-hoverable' onClick={()=>sortBy(fieldName)} {...other}>
-            {props.children}
-            <span className="icon is-pulled-right">
-                {sortByField === fieldName && <i className={classNames("fas", {'fa-sort-up': sortAscending, 'fa-sort-down': !sortAscending})} />}
-            </span>
-        </th>);
-    }
-
     return (
-        <table className="table is-fullwidth is-hoverable">
+        <SortableTable className="table is-fullwidth is-hoverable" defaultField={'endTime'} defaultAscending={false}>
             <thead>
                 <tr>
                     <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>
@@ -172,9 +141,11 @@ const TransactionGrid = function (props: TransactionGridProps): ReactElement {
                 </tr>
             </thead>
             <tbody>
-                {transactions.map(transactionRow(summary, props.onDeleteTransaction, displayedSummary, setDisplayedSummary))}
+                <SortableRows items={props?.transactions ?? []} 
+                    rowMapper={transactionRow(summary, props.onDeleteTransaction, displayedSummary, setDisplayedSummary)} 
+                    valueExtractor={valueExtractor}/>
             </tbody>
-        </table>
+        </SortableTable>
     );
 }
 

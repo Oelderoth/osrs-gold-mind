@@ -10,18 +10,19 @@ import { TransactionContext } from 'context/TransactionsContext';
 import usePriceSummary from 'hooks/usePriceSummary';
 import { OsBuddyPriceSummary } from 'types/OsBuddy';
 import { BasicItemTrade, Transaction, TransactionType } from 'types/Transactions';
+import { SortableTable, SortableTh, SortableRows } from 'components/SortableTable';
 
 class ItemSummary {
     constructor(
         public itemId: string,
         public name: string,
         public totalTransactions: number,
-        public totalQuantity: number, 
+        public totalQuantity: number,
         public totalProfit: number,
         public avgProfitPerTransaction: number,
         public avgProfitPerItem: number,
         public avgROI: number
-    ) {}
+    ) { }
 }
 
 const buildItemSummaries = (summary: OsBuddyPriceSummary, transactions: Transaction<any>[]): ItemSummary[] => {
@@ -58,42 +59,55 @@ const buildItemSummaries = (summary: OsBuddyPriceSummary, transactions: Transact
     return itemSummaries;
 }
 
+const summaryRowMapper = (itemSummary: ItemSummary) => {
+    return (<tr key={itemSummary.itemId}>
+        <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${itemSummary.itemId}`} /></td>
+        <td><Link href={{ pathname: "/item", query: { id: itemSummary.itemId } }}><a>{itemSummary.name}</a></Link></td>
+        <td>{itemSummary.totalTransactions.toLocaleString()}</td>
+        <td>{itemSummary.totalQuantity.toLocaleString()}</td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': itemSummary.totalProfit >= 0,
+                    'has-text-danger': itemSummary.totalProfit < 0
+                })
+            }>{itemSummary.totalProfit >= 0 ? '+' : null}{itemSummary.totalProfit.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        </td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': itemSummary.avgProfitPerTransaction >= 0,
+                    'has-text-danger': itemSummary.avgProfitPerTransaction < 0
+                })
+            }>{itemSummary.avgProfitPerTransaction >= 0 ? '+' : null}{itemSummary.avgProfitPerTransaction.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        </td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': itemSummary.avgProfitPerItem >= 0,
+                    'has-text-danger': itemSummary.avgProfitPerItem < 0
+                })
+            }>{itemSummary.avgProfitPerItem >= 0 ? '+' : null}{itemSummary.avgProfitPerItem.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+        </td>
+        <td>
+            <span className={
+                classNames({
+                    'has-text-success': itemSummary.avgROI >= 0,
+                    'has-text-danger': itemSummary.avgROI < 0
+                })
+            }>{itemSummary.avgROI >= 0 ? '+' : null}{(itemSummary.avgROI * 100).toLocaleString(undefined, { maximumFractionDigits: 2 })}%</span>
+        </td>
+        <td>
+            <FavoriteStar id={itemSummary.itemId} />
+        </td>
+    </tr>);
+}
+
 
 const MostProfitable: NextPage = function () {
     const { summary } = usePriceSummary();
     const { transactions } = useContext(TransactionContext);
-    const [sortByField, setSortByField] = useState('totalProfit');
-    const [sortAscending, setSortAscending] = useState(false);
-    
-    const sortBy = (field: string) => {
-        if (sortByField === field) {
-            setSortAscending(!sortAscending);
-        } else {
-            setSortAscending(false);
-            setSortByField(field);
-        }
-    }
-
     const itemSummaries: ItemSummary[] = buildItemSummaries(summary, transactions);
-    itemSummaries.sort((a, b) => {
-        const valA = a[sortByField];
-        const valB = b[sortByField];
-        if (typeof valA === 'number') {
-            return sortAscending ? a[sortByField] - b[sortByField] : b[sortByField] - a[sortByField]
-        } else {
-            return sortAscending ? valB.toString().localeCompare(valA.toString()) : valA.toString().localeCompare(valB.toString());
-        }
-    })
-
-    const SortableTh = (props) => {
-        const {fieldName, ...other} = props;
-        return (<th className='has-pointer is-hoverable' onClick={()=>sortBy(fieldName)} {...other}>
-            {props.children}
-            <span className="icon is-pulled-right">
-                {sortByField === fieldName && <i className={classNames("fas", {'fa-sort-up': sortAscending, 'fa-sort-down': !sortAscending})} />}
-            </span>
-        </th>);
-    }
 
     return (
         <div className="section">
@@ -103,7 +117,7 @@ const MostProfitable: NextPage = function () {
                     <h2 className="subtitle">Most Profitable Items</h2>
                 </div>
             </div>
-            <table className="table is-fullwidth is-hoverable">
+            <SortableTable className="table is-fullwidth is-hoverable" defaultField={'totalProfit'} defaultAscending={false}>
                 <thead>
                     <tr>
                         <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>
@@ -117,49 +131,9 @@ const MostProfitable: NextPage = function () {
                     </tr>
                 </thead>
                 <tbody>
-                    {itemSummaries.map(itemSummary => <tr key={itemSummary.itemId}>
-                        <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${itemSummary.itemId}`} /></td>
-                        <td><Link href={{pathname: "/item", query:{id:itemSummary.itemId}}}><a>{itemSummary.name}</a></Link></td>
-                        <td>{itemSummary.totalTransactions.toLocaleString()}</td>
-                        <td>{itemSummary.totalQuantity.toLocaleString()}</td>
-                        <td>
-                            <span className={
-                                classNames({
-                                    'has-text-success': itemSummary.totalProfit >= 0,
-                                    'has-text-danger': itemSummary.totalProfit < 0
-                                })
-                            }>{itemSummary.totalProfit >= 0 ? '+' : null}{itemSummary.totalProfit.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
-                        </td>
-                        <td>
-                            <span className={
-                                classNames({
-                                    'has-text-success': itemSummary.avgProfitPerTransaction >= 0,
-                                    'has-text-danger': itemSummary.avgProfitPerTransaction < 0
-                                })
-                            }>{itemSummary.avgProfitPerTransaction >= 0 ? '+' : null}{itemSummary.avgProfitPerTransaction.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
-                        </td>
-                        <td>
-                            <span className={
-                                classNames({
-                                    'has-text-success': itemSummary.avgProfitPerItem >= 0,
-                                    'has-text-danger': itemSummary.avgProfitPerItem < 0
-                                })
-                            }>{itemSummary.avgProfitPerItem >= 0 ? '+' : null}{itemSummary.avgProfitPerItem.toLocaleString(undefined, {maximumFractionDigits: 0})}</span>
-                        </td>
-                        <td>
-                            <span className={
-                                classNames({
-                                    'has-text-success': itemSummary.avgROI >= 0,
-                                    'has-text-danger': itemSummary.avgROI < 0
-                                })
-                            }>{itemSummary.avgROI >= 0 ? '+' : null}{(itemSummary.avgROI * 100).toLocaleString(undefined, {maximumFractionDigits: 2})}%</span>
-                        </td>
-                        <td>
-                            <FavoriteStar id={itemSummary.itemId}/>
-                        </td>
-                    </tr>)}
+                    <SortableRows items={itemSummaries} rowMapper={summaryRowMapper} />
                 </tbody>
-            </table>
+            </SortableTable>
         </div>
     );
 }
