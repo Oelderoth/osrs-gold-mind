@@ -12,5 +12,5 @@ export default function () {
     const { favorites } = useContext(ItemsContext);
     const [cachedFavorites] = useState(favorites);
 
-    return (<FilteringItemPage subtitle={'Highest Margin Items'} filter={favoriteFilter(cachedFavorites)} />)
+    return (<FilteringItemPage subtitle={'Favorite Items'} filter={favoriteFilter(cachedFavorites)} />)
 }
