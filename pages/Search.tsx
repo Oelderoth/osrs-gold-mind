@@ -1,14 +1,12 @@
 import React from 'react';
 
-import { NextPage } from 'next';
 import { NextRouter, useRouter } from 'next/router';
 
 import escapeStringRegexp from 'escape-string-regexp';
 import queryString from 'query-string';
 
-import ItemSummaryGrid from 'components/ItemSummaryGrid';
-import usePriceSummary from 'hooks/usePriceSummary';
 import { OsBuddyItemSummary } from 'types/OsBuddy';
+import FilteringItemPage from 'components/FilteringItemPage';
 
 function getQuery(router: NextRouter): string | undefined {
     // Since router queries are only populated on SSR and single-page navigations, 
@@ -28,22 +26,8 @@ const itemFilter = (value: string): (item: OsBuddyItemSummary) => boolean => {
     return (item) => regex.test(item.name);
 }
 
-const HighVolume: NextPage = function () {
-    const { summary } = usePriceSummary();
+export default function () {
     const router = useRouter();
     const query = getQuery(router);
-    const items = summary?.getItems()
-        ?.filter(itemFilter(query))
-        ?? [];
-
-    return (
-        <div className="section">
-            <h1 className="title">Items</h1>
-            <h2 className="subtitle">Search results for "{query}"</h2>
-
-            <ItemSummaryGrid items={items} />
-        </div>
-    );
+    return (<FilteringItemPage subtitle={`Search results for ${query}`} filter={itemFilter(query)} />)
 }
-
-export default HighVolume;
