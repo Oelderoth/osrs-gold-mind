@@ -20,6 +20,7 @@ interface RuneliteImportModalProps {
 }
 
 const itemNameFilter = (summary: OsBuddyPriceSummary,value: string): (trade: Transaction<BasicItemTrade>) => boolean => {
+    if (!value) return () => true;
     const searchFilter = itemSearchFilter(value);
     return (trade: Transaction<BasicItemTrade>) => {
         return searchFilter(summary?.getItem(trade.trades[0].itemId)?.name);
