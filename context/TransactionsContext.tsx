@@ -1,6 +1,7 @@
 import React from 'react';
-import usePersistedState, { StringMapper } from '../hooks/usePersistedState';
-import { Transaction } from '../types/transactions';
+
+import usePersistedState from 'hooks/usePersistedState';
+import { Transaction } from 'types/Transactions';
 
 const PREFIX = 'transactions-context';
 const FAVORITES_KEY = `${PREFIX}-log`;

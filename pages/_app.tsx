@@ -1,10 +1,12 @@
-import React, { Fragment } from 'react';
-import dynamic from 'next/dynamic';
-import { ItemsContextProvider } from '../context/ItemsContext';
-import { TransactionContextProvider } from '../context/TransactionsContext';
-import Header from '../components/header';
+import '../styles/styles.scss';
 
-import '../styles.scss';
+import React, { Fragment } from 'react';
+
+import dynamic from 'next/dynamic';
+
+import Header from 'components/Header';
+import { ItemsContextProvider } from 'context/ItemsContext';
+import { TransactionContextProvider } from 'context/TransactionsContext';
 
 const MyApp = ({ Component, pageProps }) => {
     return (<Fragment>

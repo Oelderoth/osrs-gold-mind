@@ -1,0 +1,17 @@
+.table {
+    th.is-hoverable, tr.is-hoverable, td.is-hoverable{
+        &:hover {
+            background-color: $background;
+        }
+    }
+
+    &.is-sticky {
+        border-collapse: separate;
+        
+        thead tr:first-child th{
+            position:sticky;
+            top: 0;
+            background-color: #ffffff;
+        }
+    }
+}
