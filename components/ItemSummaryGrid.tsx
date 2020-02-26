@@ -10,11 +10,12 @@ import { SortableTable, SortableTh, SortableRows } from './SortableTable';
 
 interface ItemGridProps {
     items: OsBuddyItemSummary[];
+    pageSize?: number;
 }
 
 function itemRow(item: OsBuddyItemSummary): ReactElement {
     return <tr key={item.id}>
-        <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
+        <td><img className={'item-icon-small'} src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
         <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
         <td>{item.sell_average.toLocaleString()}</td>
         <td>{item.buy_average.toLocaleString()}</td>
@@ -43,7 +44,18 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
 
 const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
     return (
-        <SortableTable className="table is-fullwidth is-hoverable" defaultField={'profit'} defaultAscending={false}>
+        <SortableTable className="table is-fullwidth is-hoverable" 
+            defaultField={'profit'} 
+            defaultAscending={false}
+            pageSize={props.pageSize ?? 15}
+            headerContent={<div className="buttons is-marginless">
+                <a className="button is-small is-info">
+                    <span className="icon is-small">
+                        <i className="fas fa-filter" />
+                    </span>
+                    <span>Filter Items</span>
+                </a>
+            </div>}>
             <thead>
                 <tr>
                     <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>

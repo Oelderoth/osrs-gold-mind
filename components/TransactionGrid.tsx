@@ -127,7 +127,10 @@ const TransactionGrid = function (props: TransactionGridProps): ReactElement {
     }
 
     return (
-        <SortableTable className="table is-fullwidth is-hoverable" defaultField={'endTime'} defaultAscending={false}>
+        <SortableTable className="table is-fullwidth is-hoverable" 
+            defaultField={'endTime'} 
+            defaultAscending={false}
+            pageSize={30}>
             <thead>
                 <tr>
                     <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>

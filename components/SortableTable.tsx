@@ -1,11 +1,13 @@
-import React, { ReactElement, useState, useContext, useEffect, Fragment } from "react";
+import React, { ReactElement, useState, useContext, useEffect, Fragment, ReactNode } from "react";
 
 import classNames from 'classnames';
 
-interface SortableTableProps extends React.ComponentPropsWithoutRef<'table'>{
+interface SortableTableProps extends React.ComponentPropsWithoutRef<'table'> {
     children?: React.ReactNode;
     defaultField: string;
     defaultAscending?: boolean;
+    pageSize?: number;
+    headerContent?: React.ReactNode;
 }
 
 interface SortableThProps extends React.ComponentPropsWithoutRef<'th'> {
@@ -22,24 +24,33 @@ interface SortableTableContext {
     sortedField: string;
     ascending: boolean;
     defaultAscending: boolean;
-    setSortedField: (val:string) => void;
-    setAscending: (val:boolean) => void;
+    offset?: number;
+    count?: number;
+    itemCount: number;
+    setSortedField: (val: string) => void;
+    setAscending: (val: boolean) => void;
+    setItemCount: (val: number) => void;
+    setPage: (val: number) => void;
 }
 
-
-const SortableTableContext = React.createContext({ 
+const SortableTableContext = React.createContext({
     sortedField: '',
     ascending: true,
     defaultAscending: true,
-    setSortedField: (_) => {},
-    setAscending: (_) => {}
+    offset: null,
+    count: null,
+    itemCount: 0,
+    setSortedField: (_) => { },
+    setAscending: (_) => { },
+    setItemCount: (_) => { },
+    setPage: (_) => { }
 } as SortableTableContext);
 
 export function SortableTh(props: SortableThProps): ReactElement {
-    const {sortedField, ascending, defaultAscending, setSortedField, setAscending} = useContext(SortableTableContext);
-    const {fieldName, className, children, ...other} = props;
+    const { sortedField, ascending, defaultAscending, setSortedField, setAscending } = useContext(SortableTableContext);
+    const { fieldName, className, children, ...other } = props;
     return (
-        <th className={classNames('has-pointer is-hoverable', className)} onClick={()=>{
+        <th className={classNames('has-pointer is-hoverable', className)} onClick={() => {
             if (sortedField === fieldName) {
                 setAscending(!ascending);
             } else {
@@ -50,23 +61,25 @@ export function SortableTh(props: SortableThProps): ReactElement {
             <div className="is-flex is-align-center">
                 {children}
                 <span className="icon is-pulled-right">
-                    {sortedField === fieldName && <i className={classNames("fas", {'fa-sort-up': ascending, 'fa-sort-down': !ascending})} />}
+                    {sortedField === fieldName && <i className={classNames("fas", { 'fa-sort-up': ascending, 'fa-sort-down': !ascending })} />}
                 </span>
             </div>
         </th>
     );
 }
 
-export function SortableRows<T>(props:SortableRowsProps<T>): ReactElement {
-    const {sortedField, ascending} = useContext(SortableTableContext);
+export function SortableRows<T>(props: SortableRowsProps<T>): ReactElement {
+    const { sortedField, ascending, count, offset, setItemCount, setPage } = useContext(SortableTableContext);
     const [sortedItems, setSortedItems] = useState([]);
 
-    const valueExtractor: (obj: any, field:string) => any = props.valueExtractor ?? ((obj: any, field: string) => {
+    const valueExtractor: (obj: any, field: string) => any = props.valueExtractor ?? ((obj: any, field: string) => {
         return obj[field];
     });
 
     useEffect(() => {
-        const sortedItems = [...props.items];
+        setItemCount(props.items.length);
+        setPage(1);
+        let sortedItems = [...props.items];
         sortedItems.sort((a, b) => {
             const valA = valueExtractor(a, sortedField);
             const valB = valueExtractor(b, sortedField);
@@ -79,25 +92,90 @@ export function SortableRows<T>(props:SortableRowsProps<T>): ReactElement {
         setSortedItems(sortedItems);
     }, [props.items, sortedField, ascending]);
 
+    const currentPage = (offset || count) ? sortedItems.slice(offset ?? 0, (offset ?? 0) + count) : sortedItems;
+
     return (<Fragment>
-        {sortedItems.map(props.rowMapper)}
+        {currentPage.map(props.rowMapper)}
     </Fragment>);
 }
 
-export function SortableTable(props: SortableTableProps): ReactElement{
-    const {defaultField, defaultAscending = true, children, ...other} = props;
+const buildPagination = (itemCount: number, pageSize: number, page: number, setPage:(p: number)=>void): ReactNode => {
+    const pageCount = Math.ceil(itemCount / pageSize);
+
+    const elements = [];
+
+    const paginationLink = (p: number) => {
+        return (<a key={`pagination-${p}`} className={classNames("button is-small", {
+            'is-primary': page === p
+        })} onClick={() => setPage(p)}>{p}</a>);
+    }
+
+    if (pageCount <= 6) {
+        for (let i = 1; i <= pageCount; i++) {
+            elements.push(paginationLink(i));
+        }
+    } else {
+        elements.push(paginationLink(1));
+
+        if (page <= 3) {
+            elements.push(paginationLink(2));
+            elements.push(paginationLink(3));
+            elements.push(paginationLink(4));
+            elements.push(<a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(paginationLink(pageCount));
+        } else if (page >= pageCount - 3) {
+            elements.push(<a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(paginationLink(pageCount - 3));
+            elements.push(paginationLink(pageCount - 2));
+            elements.push(paginationLink(pageCount - 1));
+            elements.push(paginationLink(pageCount));
+        } else {
+            elements.push(<a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a>);
+
+            for (let i = Math.max(2, page - 1); i <= Math.min(page + 1, pageCount - 1); i++) {
+                elements.push(paginationLink(i));
+            }
+
+            elements.push(<a key={'e2'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(paginationLink(pageCount));
+        }
+    }
+
+    return elements;
+}
+
+export function SortableTable(props: SortableTableProps): ReactElement {
+    const { defaultField, defaultAscending = true, pageSize, children, headerContent, ...other } = props;
     const [sortedField, setSortedField] = useState(defaultField);
     const [ascending, setAscending] = useState(defaultAscending);
+    const [itemCount, setItemCount] = useState(0);
+    const [page, setPage] = useState(1);
+
+    const showPages = pageSize ? itemCount > pageSize : false;
+
     return (
-    <SortableTableContext.Provider value={{
-        sortedField,
-        ascending,
-        defaultAscending: defaultAscending,
-        setSortedField,
-        setAscending
-    }}>
-        <table {...other}>
-            {children}
-        </table>
-    </SortableTableContext.Provider>)
+        <SortableTableContext.Provider value={{
+            sortedField,
+            ascending,
+            offset: pageSize ? pageSize * (page - 1) : 0,
+            count: pageSize,
+            defaultAscending: defaultAscending,
+            itemCount,
+            setSortedField,
+            setAscending,
+            setItemCount,
+            setPage
+        }}>
+            <div className='is-flex is-flex-end is-align-center'>
+                {headerContent}
+                {showPages && <div className="table-pagination buttons is-small has-addons ">
+                    <button className="button is-small" disabled={page === 1} onClick={() => setPage(page-1)}><span className='icon'><i className="fas fa-chevron-left" /></span></button>
+                    {buildPagination(itemCount, pageSize, page, setPage)}
+                    <button className="button is-small" disabled={page === Math.ceil(itemCount/pageSize)} onClick={() => setPage(page+1)}><span className='icon'><i className="fas fa-chevron-right" /></span></button>
+                </div>}
+            </div>
+            <table {...other}>
+                {children}
+            </table>
+        </SortableTableContext.Provider>)
 }
