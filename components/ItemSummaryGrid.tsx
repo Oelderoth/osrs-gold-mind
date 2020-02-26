@@ -8,6 +8,7 @@ import FavoriteStar from 'components/FavoriteStar';
 import FilterItemModal, { FilterConfiguration, ItemFilter } from 'components/FilterItemModal';
 import { SortableRows, SortableTable, SortableTh } from 'components/SortableTable';
 import { OsBuddyItemSummary } from 'types/OsBuddy';
+import ItemSearchFilter from 'utils/ItemSearchFilter';
 
 interface ItemGridProps {
     items: OsBuddyItemSummary[];
@@ -48,10 +49,12 @@ const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
     const [modalVisible, setModalVisible] = useState(false);
     const [filterConfiguration, setFilterConfiguration] = useState<FilterConfiguration>();
     const [filteredItems, setFilteredItems] = useState(props.items);
+    const [itemNameFilter, setItemNameFilter] = useState('');
 
     useEffect(() => {
-        setFilteredItems([...props.items].filter(ItemFilter(filterConfiguration)));
-    }, [props.items, filterConfiguration]);
+        const searchFilter = ItemSearchFilter(itemNameFilter, true);
+        setFilteredItems([...props.items].filter(ItemFilter(filterConfiguration)).filter(item => searchFilter(item.name)));
+    }, [props.items, filterConfiguration, itemNameFilter]);
 
     return (
         <Fragment>
@@ -59,13 +62,18 @@ const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
                 defaultField={'profit'} 
                 defaultAscending={false}
                 pageSize={props.pageSize ?? 15}
-                headerContent={<div className="buttons is-marginless">
-                    <a className={classNames("button is-small", {'is-info is-light': !!filterConfiguration})} onClick={() => setModalVisible(true)}>
-                        <span className="icon is-small">
-                            <i className="fas fa-filter" />
-                        </span>
-                        <span>Filter Items</span>
-                    </a>
+                headerContent={<div className="is-flex is-flex-end field">
+                    <div className="item-name-filter control">
+                            <input type="text" className="input is-small" placeholder="Filter by item..." onChange={(e) => setItemNameFilter(e.target.value)}/>
+                    </div>
+                    <div className="is-marginless">
+                        <a className={classNames("button is-small", {'is-info is-light': !!filterConfiguration})} onClick={() => setModalVisible(true)}>
+                            <span className="icon is-small">
+                                <i className="fas fa-filter" />
+                            </span>
+                            <span>Filter Items</span>
+                        </a>
+                    </div>
                 </div>}>
                 <thead>
                     <tr>
