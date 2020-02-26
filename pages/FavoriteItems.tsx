@@ -12,5 +12,5 @@ export default function () {
     const { favorites } = useContext(ItemsContext);
     const [cachedFavorites] = useState(favorites);
 
-    return (<FilteringItemPage subtitle={'Favorite Items'} filter={favoriteFilter(cachedFavorites)} />)
+    return (<FilteringItemPage pageKey={'favorite-items'} subtitle={'Favorite Items'} filter={favoriteFilter(cachedFavorites)} />)
 }

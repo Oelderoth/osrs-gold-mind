@@ -11,5 +11,5 @@ function highVolumeFilter(itemSummary:OsBuddyItemSummary) : boolean {
 }
 
 export default function () {
-    return (<FilteringItemPage subtitle={'High Volume Items'} filter={highVolumeFilter} />)
+    return (<FilteringItemPage pageKey={'high-volume'} subtitle={'High Volume Items'} filter={highVolumeFilter} />)
 }

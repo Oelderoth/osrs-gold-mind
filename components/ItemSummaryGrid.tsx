@@ -9,10 +9,12 @@ import FilterItemModal, { FilterConfiguration, ItemFilter } from 'components/Fil
 import { SortableRows, SortableTable, SortableTh } from 'components/SortableTable';
 import { OsBuddyItemSummary } from 'types/OsBuddy';
 import ItemSearchFilter from 'utils/ItemSearchFilter';
+import usePersistedState from 'hooks/usePersistedState';
 
-interface ItemGridProps {
+interface ItemGridProps extends React.ComponentPropsWithoutRef<'div'>{
     items: OsBuddyItemSummary[];
     pageSize?: number;
+    pageKey?: string;
 }
 
 function itemRow(item: OsBuddyItemSummary): ReactElement {
@@ -46,8 +48,9 @@ function itemRow(item: OsBuddyItemSummary): ReactElement {
 }
 
 const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
+    const [key] = useState(props.pageKey)
     const [modalVisible, setModalVisible] = useState(false);
-    const [filterConfiguration, setFilterConfiguration] = useState<FilterConfiguration>();
+    const [filterConfiguration, setFilterConfiguration] = key ? usePersistedState<FilterConfiguration>(`${key.toString()}-item-filter-configuration`, null) : useState();
     const [filteredItems, setFilteredItems] = useState(props.items);
     const [itemNameFilter, setItemNameFilter] = useState('');
 
@@ -57,7 +60,7 @@ const ItemSummaryGrid = function (props: ItemGridProps): ReactElement {
     }, [props.items, filterConfiguration, itemNameFilter]);
 
     return (
-        <Fragment>
+        <Fragment key={key}>
             <SortableTable className="table is-fullwidth is-hoverable" 
                 defaultField={'profit'} 
                 defaultAscending={false}
