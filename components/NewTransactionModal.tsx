@@ -60,7 +60,7 @@ const NewTransactionModal = (props: NewTransactionModal): ReactElement => {
     return (<div className={classNames('modal', {
         'is-active': props.visible
     })}>
-        <div className="modal-background"></div>
+        <div className="modal-background" onClick={() => props?.onCancel?.()}></div>
         <div className="modal-content is-overflow-visible">
             <div className="panel">
                 <p className="panel-heading">Add New Transaction</p>
@@ -108,7 +108,7 @@ const NewTransactionModal = (props: NewTransactionModal): ReactElement => {
                 </div>
             </div>
         </div>
-        <button className="modal-close is-large" aria-label="close"></button>
+        <button className="modal-close is-large" aria-label="close" onClick={() => props?.onCancel?.()}></button>
     </div>);
 }
 

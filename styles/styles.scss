@@ -55,5 +55,15 @@ $fa-font-path: "../node_modules/@fortawesome/fontawesome-free/webfonts" !default
 }
 
 .table-pagination {
-    margin: 0 1rem !important;
+    margin: 0 0 0.75rem 1rem !important;
+}
+
+.item-name-filter {
+    margin: 0 1rem;
+}
+
+.table-pagination {
+    .control:not(:first-child):not(:last-child) .button.is-small {
+        width: calc(3ch + 1rem);
+    }
 }

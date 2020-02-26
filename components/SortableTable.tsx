@@ -105,9 +105,9 @@ const buildPagination = (itemCount: number, pageSize: number, page: number, setP
     const elements = [];
 
     const paginationLink = (p: number) => {
-        return (<a key={`pagination-${p}`} className={classNames("button is-small", {
+        return (<p className="control"><a key={`pagination-${p}`} className={classNames("button is-small", {
             'is-primary': page === p
-        })} onClick={() => setPage(p)}>{p}</a>);
+        })} onClick={() => setPage(p)}>{p}</a></p>);
     }
 
     if (pageCount <= 6) {
@@ -117,26 +117,28 @@ const buildPagination = (itemCount: number, pageSize: number, page: number, setP
     } else {
         elements.push(paginationLink(1));
 
-        if (page <= 3) {
+        if (page <= 4) {
             elements.push(paginationLink(2));
             elements.push(paginationLink(3));
             elements.push(paginationLink(4));
-            elements.push(<a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(paginationLink(5));
+            elements.push(<p className="control"><a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a></p>);
             elements.push(paginationLink(pageCount));
         } else if (page >= pageCount - 3) {
-            elements.push(<a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(<p className="control"><a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a></p>);
+            elements.push(paginationLink(pageCount - 4));
             elements.push(paginationLink(pageCount - 3));
             elements.push(paginationLink(pageCount - 2));
             elements.push(paginationLink(pageCount - 1));
             elements.push(paginationLink(pageCount));
         } else {
-            elements.push(<a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(<p className="control"><a key={'e1'} className="button is-static is-borderless is-small">&hellip;</a></p>);
 
             for (let i = Math.max(2, page - 1); i <= Math.min(page + 1, pageCount - 1); i++) {
                 elements.push(paginationLink(i));
             }
 
-            elements.push(<a key={'e2'} className="button is-static is-borderless is-small">&hellip;</a>);
+            elements.push(<p className="control"><a key={'e2'} className="button is-static is-borderless is-small">&hellip;</a></p>);
             elements.push(paginationLink(pageCount));
         }
     }
@@ -166,12 +168,16 @@ export function SortableTable(props: SortableTableProps): ReactElement {
             setItemCount,
             setPage
         }}>
-            <div className='is-flex is-flex-end is-align-center'>
+            <div className=''>
                 {headerContent}
-                {showPages && <div className="table-pagination buttons is-small has-addons ">
-                    <button className="button is-small" disabled={page === 1} onClick={() => setPage(page-1)}><span className='icon'><i className="fas fa-chevron-left" /></span></button>
+                {showPages && <div className="table-pagination field has-addons is-pulled-right">
+                    <p className="control">
+                        <button className="button is-small" disabled={page === 1} onClick={() => setPage(page-1)}><span className='icon'><i className="fas fa-chevron-left" /></span></button>
+                    </p>
                     {buildPagination(itemCount, pageSize, page, setPage)}
-                    <button className="button is-small" disabled={page === Math.ceil(itemCount/pageSize)} onClick={() => setPage(page+1)}><span className='icon'><i className="fas fa-chevron-right" /></span></button>
+                    <p className="control">
+                        <button className="button is-small" disabled={page === Math.ceil(itemCount/pageSize)} onClick={() => setPage(page+1)}><span className='icon'><i className="fas fa-chevron-right" /></span></button>
+                    </p>
                 </div>}
             </div>
             <table {...other}>
