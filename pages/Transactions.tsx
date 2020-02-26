@@ -31,7 +31,7 @@ const Transactions: NextPage = function () {
                             'has-text-primary': totalProfit >= 0,
                             'has-text-danger': totalProfit < 0
                         })}>{totalProfit >= 0 ? '+' : null}{totalProfit.toLocaleString()}</h1>
-                        <h2 className="subtitle">33 Transactions</h2>
+                        <h2 className="subtitle">{transactions.length} Transactions</h2>
                     </div>
                     <div className="buttons">
                         <button className={classNames("button is-outlined", {

@@ -15,5 +15,5 @@ function suggestedItemFilter(itemSummary:OsBuddyItemSummary) : boolean {
 }
 
 export default function () {
-    return (<FilteringItemPage subtitle={'Suggested Items'} filter={suggestedItemFilter} />)
+    return (<FilteringItemPage pageKey={'suggested-items'} subtitle={'Suggested Items'} filter={suggestedItemFilter} />)
 }

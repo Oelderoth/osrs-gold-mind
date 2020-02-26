@@ -12,5 +12,5 @@ function highestMarginFilter(itemSummary:OsBuddyItemSummary) : boolean {
 }
 
 export default function () {
-    return (<FilteringItemPage subtitle={'Highest Margin Items'} filter={highestMarginFilter} />)
+    return (<FilteringItemPage pageKey={'highest-margin'} subtitle={'Highest Margin Items'} filter={highestMarginFilter} />)
 }

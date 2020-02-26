@@ -6,9 +6,10 @@ import { OsBuddyItemSummary } from 'types/OsBuddy';
 
 export type ItemFilter = (item: OsBuddyItemSummary) => boolean;
 
-interface FilteringItemProps {
+interface FilteringItemProps extends React.ComponentPropsWithoutRef<'div'>{
     filter: ItemFilter;
     subtitle: string;
+    pageKey?: string;
 }
 
 const FilteringItemPage = (props: FilteringItemProps): ReactElement => {
@@ -22,7 +23,7 @@ const FilteringItemPage = (props: FilteringItemProps): ReactElement => {
             <h1 className="title">Items</h1>
             <h2 className="subtitle">{props.subtitle}</h2>
 
-            <ItemSummaryGrid items={items} />
+            <ItemSummaryGrid pageKey={props.pageKey} items={items} />
         </div>
     );
 }
