@@ -117,7 +117,10 @@ const MostProfitable: NextPage = function () {
                     <h2 className="subtitle">Most Profitable Items</h2>
                 </div>
             </div>
-            <SortableTable className="table is-fullwidth is-hoverable" defaultField={'totalProfit'} defaultAscending={false}>
+            <SortableTable className="table is-fullwidth is-hoverable" 
+                defaultField={'totalProfit'} 
+                defaultAscending={false}
+                pageSize={50}>
                 <thead>
                     <tr>
                         <SortableTh fieldName={'name'} colSpan={2}>Name</SortableTh>
