@@ -14,9 +14,8 @@ interface NewTransactionModal {
 
 const createTransaction = (itemId: string, buyPrice: number, sellPrice: number, quantity: number): Transaction<BasicItemTrade> => {
     const timestamp = Date.now();
-    const id = `${itemId}:${quantity}:${timestamp.toString()}:${timestamp.toString()}`;
-    const trade = new BasicItemTrade(id, timestamp, timestamp, itemId, quantity, buyPrice, sellPrice);
-    return new BasicItemTransaction(id, [trade]);
+    const trade = new BasicItemTrade(timestamp, timestamp, itemId, quantity, buyPrice, sellPrice);
+    return new BasicItemTransaction([trade]);
 }
 
 const NewTransactionModal = (props: NewTransactionModal): ReactElement => {

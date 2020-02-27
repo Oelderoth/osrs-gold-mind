@@ -1,3 +1,5 @@
+import hash from 'object-hash';
+
 export enum TransactionType {
     BASIC_ITEM_TRADE
 }
@@ -15,6 +17,7 @@ export interface Trade {
  * A trade where a single item was bought for a price and then later sold for a different price
  */
 export class BasicItemTrade implements Trade {
+    public readonly id: string;
     public readonly startTime: number;
     public readonly endTime: number;
     public readonly profit: number;
@@ -22,8 +25,8 @@ export class BasicItemTrade implements Trade {
     public readonly ROI: number;
     public readonly buyPrice: number;
     public readonly sellPrice: number;
-
-    constructor(public id: string,
+    
+    constructor(
         buy_ts: number,
         sell_ts: number,
         public itemId: string,
@@ -37,6 +40,8 @@ export class BasicItemTrade implements Trade {
             this.ROI = (sellPrice - buyPrice) / buyPrice * 100;
             this.buyPrice = buyPrice * quantity;
             this.sellPrice = sellPrice * quantity;
+
+            this.id = hash([this.startTime, this.endTime, this.itemId, this.quantity, this.buyPrice, this.sellPrice]);
         }
 
     static from(itemSummary: BasicItemTrade): BasicItemTrade {
@@ -53,13 +58,14 @@ export interface Transaction<T extends Trade> {
     readonly buyPrice: number;
     readonly sellPrice: number;
     readonly ROI: number;
-    readonly transactionType: TransactionType;    
+    readonly transactionType: TransactionType;
 }
 
 /**
  * Represents a Trade or a group of Trades that were done as a cohesive unit
  */
 export class BasicItemTransaction implements Transaction<BasicItemTrade> {
+    public readonly id: string;
     public readonly startTime: number;
     public readonly endTime: number;
     public readonly profit: number;
@@ -68,14 +74,15 @@ export class BasicItemTransaction implements Transaction<BasicItemTrade> {
     public readonly ROI: number;
     public readonly transactionType: TransactionType = TransactionType.BASIC_ITEM_TRADE;
 
-    constructor(public id: string,
-        public readonly trades: BasicItemTrade[]) {
+    constructor(public readonly trades: BasicItemTrade[]) {
         this.startTime = trades.reduce((acc, cur) => Math.min(acc, cur.startTime), Number.MAX_VALUE);
         this.endTime = trades.reduce((acc, cur) => Math.max(acc, cur.endTime), Number.MIN_VALUE);
         this.profit = trades.reduce((acc, cur) => acc + cur.profit, 0);
         this.buyPrice = trades.reduce((acc, cur) => acc + cur.buyPrice, 0);
         this.sellPrice = trades.reduce((acc, cur) => acc + cur.sellPrice, 0);
         this.ROI = (this.sellPrice - this.buyPrice) / this.buyPrice * 100;
+
+        this.id = hash([this.trades]);
     };
 
     static from(itemSummary: BasicItemTransaction): BasicItemTransaction {

@@ -42,8 +42,7 @@ const buildTransactionsFromChunk = (c: RuneliteGrandExchangeTrade[]): Transactio
     let sells = chunk.filter(t => !t.buy);
 
     const createBasicItemTrade = (buy: RuneliteGrandExchangeTrade, sell: RuneliteGrandExchangeTrade, quantity): BasicItemTrade => {
-        return new BasicItemTrade(`${buy.itemId}:${quantity}:${buy.time.seconds}:${sell.time.seconds}`,
-            buy.time.seconds * 1000, 
+        return new BasicItemTrade(buy.time.seconds * 1000, 
             sell.time.seconds * 1000, 
             buy.itemId.toString(), 
             quantity, 
@@ -106,11 +105,7 @@ const buildTransactionsFromChunk = (c: RuneliteGrandExchangeTrade[]): Transactio
         }
     }
 
-    const itemId = trades[0].itemId;
-    const earliestTime = trades.reduce((acc, cur) => Math.min(acc, cur.startTime), trades[0].startTime);
-    const latestTime = trades.reduce((acc, cur) => Math.max(acc, cur.endTime), trades[0].endTime);
-
-    return new BasicItemTransaction(`${itemId}:${earliestTime}:${latestTime}`,trades);
+    return new BasicItemTransaction(trades);
 }
 
 const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade>[] => {
@@ -129,7 +124,7 @@ const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Tran
         const transaction = transactions[i];
         // If it is a single transaction of a single item
         if (i > 0 && transaction.trades.length === 1 && transaction.trades[0].quantity === 1) {
-            collapsedTransactions.push(new BasicItemTransaction(transactions[i-1].id, [...transactions[i-1].trades, ...transaction.trades]))
+            collapsedTransactions.push(new BasicItemTransaction([...transactions[i-1].trades, ...transaction.trades]))
             i--;
         } else {
             collapsedTransactions.push(transaction);
