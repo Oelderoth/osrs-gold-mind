@@ -8,7 +8,7 @@ import usePriceSummary from 'hooks/usePriceSummary';
 import { OsBuddyItemSummary } from 'types/OsBuddy';
 import ItemSearchFilter from 'utils/ItemSearchFilter';
 
-import FilterItemModal, { FilterConfiguration, ItemFilter as ItemModalFilter } from './FilterItemModal';
+import FilterItemModal, { FilterConfiguration, ItemFilter as ItemModalFilter, ItemFilter } from './FilterItemModal';
 import { SortableTablePagination } from './SortableTable';
 
 export type ItemFilter = (item: OsBuddyItemSummary) => boolean;
@@ -29,7 +29,7 @@ const FilteringItemPage = (props: FilteringItemProps): ReactElement => {
     useEffect(() => {
         if (!summary) return;
         const searchFilter = ItemSearchFilter(itemNameFilter, true);
-        setItems(summary.getItems().filter(ItemModalFilter(filterConfiguration)).filter(item => searchFilter(item.name)));
+        setItems(summary.getItems().filter(ItemModalFilter(filterConfiguration)).filter(item => searchFilter(item.name)).filter(props.filter));
     }, [summary, filterConfiguration, itemNameFilter]);
 
     return (
