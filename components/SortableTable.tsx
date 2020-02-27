@@ -8,10 +8,15 @@ interface SortableTableProps extends React.ComponentPropsWithoutRef<'table'> {
     defaultAscending?: boolean;
     pageSize?: number;
     headerContent?: React.ReactNode;
+    automaticPagination?: boolean;
 }
 
 interface SortableThProps extends React.ComponentPropsWithoutRef<'th'> {
     fieldName: string;
+}
+
+interface SortableTablePaginationProps extends React.ComponentPropsWithoutRef<'div'> {
+
 }
 
 interface SortableRowsProps<T> {
@@ -25,8 +30,9 @@ interface SortableTableContext {
     ascending: boolean;
     defaultAscending: boolean;
     offset?: number;
-    count?: number;
+    pageSize?: number;
     itemCount: number;
+    page: number;
     setSortedField: (val: string) => void;
     setAscending: (val: boolean) => void;
     setItemCount: (val: number) => void;
@@ -38,8 +44,9 @@ const SortableTableContext = React.createContext({
     ascending: true,
     defaultAscending: true,
     offset: null,
-    count: null,
+    pageSize: null,
     itemCount: 0,
+    page: 1,
     setSortedField: (_) => { },
     setAscending: (_) => { },
     setItemCount: (_) => { },
@@ -69,7 +76,7 @@ export function SortableTh(props: SortableThProps): ReactElement {
 }
 
 export function SortableRows<T>(props: SortableRowsProps<T>): ReactElement {
-    const { sortedField, ascending, count, offset, setItemCount, setPage } = useContext(SortableTableContext);
+    const { sortedField, ascending, pageSize, offset, setItemCount, setPage } = useContext(SortableTableContext);
     const [sortedItems, setSortedItems] = useState([]);
 
     const valueExtractor: (obj: any, field: string) => any = props.valueExtractor ?? ((obj: any, field: string) => {
@@ -92,7 +99,7 @@ export function SortableRows<T>(props: SortableRowsProps<T>): ReactElement {
         setSortedItems(sortedItems);
     }, [props.items, sortedField, ascending]);
 
-    const currentPage = (offset || count) ? sortedItems.slice(offset ?? 0, (offset ?? 0) + count) : sortedItems;
+    const currentPage = (offset || pageSize) ? sortedItems.slice(offset ?? 0, (offset ?? 0) + pageSize) : sortedItems;
 
     return (<Fragment>
         {currentPage.map(props.rowMapper)}
@@ -146,21 +153,36 @@ const buildPagination = (itemCount: number, pageSize: number, page: number, setP
     return elements;
 }
 
+export function SortableTablePagination(props: SortableTablePaginationProps): ReactElement {
+    const {className, ...other} = props;
+    const {page, itemCount, pageSize, setPage} = useContext(SortableTableContext);
+    return (<div className={classNames(className, "table-pagination field has-addons is-pulled-right")} {...other}>
+        <p className="control">
+            <button className="button is-small" disabled={page === 1} onClick={() => setPage(page-1)}><span className='icon'><i className="fas fa-chevron-left" /></span></button>
+        </p>
+        {buildPagination(itemCount, pageSize, page, setPage)}
+        <p className="control">
+            <button className="button is-small" disabled={page === Math.ceil(itemCount/pageSize)} onClick={() => setPage(page+1)}><span className='icon'><i className="fas fa-chevron-right" /></span></button>
+        </p>
+    </div>)
+}
+
 export function SortableTable(props: SortableTableProps): ReactElement {
-    const { defaultField, defaultAscending = true, pageSize, children, headerContent, ...other } = props;
+    const { defaultField, defaultAscending = true, pageSize, automaticPagination = true, children, headerContent, ...other } = props;
     const [sortedField, setSortedField] = useState(defaultField);
     const [ascending, setAscending] = useState(defaultAscending);
     const [itemCount, setItemCount] = useState(0);
     const [page, setPage] = useState(1);
 
-    const showPages = pageSize ? itemCount > pageSize : false;
+    const showPages = pageSize && automaticPagination ? itemCount > pageSize : false;
 
     return (
         <SortableTableContext.Provider value={{
             sortedField,
             ascending,
             offset: pageSize ? pageSize * (page - 1) : 0,
-            count: pageSize,
+            pageSize,
+            page,
             defaultAscending: defaultAscending,
             itemCount,
             setSortedField,
