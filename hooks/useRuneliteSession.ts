@@ -145,7 +145,7 @@ export function useRuneliteGeHistory(session: RuneliteSession): RuneliteGrandExc
         if (session?.status === RuneliteSessionStatus.LOGGED_IN) {
             setHistory(await fetchJsonOrThrow(GE_HISTORY_URL, {headers:{'RUNELITE-AUTH': session.uuid}}));
         }
-    })()}, [session, session.status])
+    })()}, [session, session?.status])
 
     return history;
 }

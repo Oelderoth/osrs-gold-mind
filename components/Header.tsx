@@ -46,6 +46,7 @@ export default () => {
                             <Link href="/transactions"><a className="navbar-item">Transaction Log</a></Link>
                             <div className="navbar-divider" />
                             <Link href="/mostProfitable"><a className="navbar-item">Most Profitable Items</a></Link>
+                            <Link href="/tradeHistory"><a className="navbar-item">Trade History</a></Link>
                         </div>
                     </div>
                     <div className="navbar-item has-dropdown is-hoverable">

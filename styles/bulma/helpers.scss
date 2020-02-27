@@ -6,8 +6,16 @@
     align-items: flex-start !important;
 }
 
+.is-align-flex-end {
+    align-items: flex-end;
+}
+
 .is-flex-end {
     justify-content: flex-end !important;
+}
+
+.is-flex-center {
+    justify-content: center !important;
 }
 
 .is-flex-wrap {
@@ -48,4 +56,8 @@
 
 .is-background {
     background-color: $background !important;
+}
+
+.text.has-margin {
+    margin: 1rem;
 }
