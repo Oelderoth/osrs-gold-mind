@@ -111,12 +111,8 @@ const buildTransactionsFromChunk = (c: RuneliteGrandExchangeTrade[]): Transactio
 const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade>[] => {
     let processedGe = geHistory.sort((a, b) => b.time.seconds - a.time.seconds);
     
-    console.log(`\tFinding Chunks`)
     const [_, chunks] = findChunks(processedGe);
-    console.log(`\tFound ${chunks.length} chunks`, chunks)
-    console.log(`\tFinding Transactions`)
     const transactions = chunks.map(buildTransactionsFromChunk)
-    console.log(`\tFound ${transactions.length} transactions. Collapsing rogue price checks`)
 
     // Collapse price checks into the following transaction
     const collapsedTransactions = [];
@@ -130,7 +126,6 @@ const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Tran
             collapsedTransactions.push(transaction);
         }
     }
-    console.log(`\tCollapsed into ${collapsedTransactions.length} transactions`)
 
     return collapsedTransactions;
 }
@@ -150,7 +145,6 @@ export default function extractTransactions(geHistory: RuneliteGrandExchangeTrad
 
     const matches = [];
     for (let [key, trades] of groupedTrades) {
-        console.log(`Finding matches for ${trades.length} trades of ${key}`)
         matches.push(...extractTransactionsForItem(trades))
     }
 
