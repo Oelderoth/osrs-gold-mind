@@ -82,7 +82,7 @@ const RuneliteImportModal = (props: RuneliteImportModalProps): ReactElement => {
                                 const item = summary.getItem(transaction.trades[0].itemId);
                                 return (<tr className="has-pointer" onClick={() => toggleTransaction(transaction)}>
                                     <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
-                                    <td><Link href={{pathname: "/item", query:{id:transaction.trades[0].itemId}}}><a>{item.name}</a></Link></td>
+                                    <td><Link href={{pathname: "/Item", query:{id:transaction.trades[0].itemId}}} as={"/item"}><a>{item.name}</a></Link></td>
                                     <td>{transaction.trades.reduce((acc, cur) => acc + cur.quantity, 0).toLocaleString()}</td>
                                     <td>{transaction.buyPrice.toLocaleString()}</td>
                                     <td>{transaction.sellPrice.toLocaleString()}</td>

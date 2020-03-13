@@ -60,7 +60,7 @@ const FilteringItemPage = (props: FilteringItemProps): ReactElement => {
                             </div>
                         </div>
                     </div>
-                </ItemSummaryGrid>>
+                </ItemSummaryGrid>
             </div>
             <FilterItemModal visible={modalVisible}
                 initialFilter={filterConfiguration}

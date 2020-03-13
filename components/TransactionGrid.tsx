@@ -27,7 +27,7 @@ function basicItemTradeRow(summary: OsBuddyPriceSummary, deleteTransaction: (tra
     return (<React.Fragment key={transaction.id}>
         <tr className='has-pointer' onClick={e => onClick?.(e)}>
             <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
-            <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
+            <td><Link href={{pathname: "/Item", query:{id:item.id}}} as="/item"><a>{item.name}</a></Link></td>
             <td>{quantity.toLocaleString()}</td>
             <td>{transaction.buyPrice.toLocaleString()}</td>
             <td>{transaction.sellPrice.toLocaleString()}</td>

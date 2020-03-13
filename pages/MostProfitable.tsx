@@ -62,7 +62,7 @@ const buildItemSummaries = (summary: OsBuddyPriceSummary, transactions: Transact
 const summaryRowMapper = (itemSummary: ItemSummary) => {
     return (<tr key={itemSummary.itemId}>
         <td><img src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${itemSummary.itemId}`} /></td>
-        <td><Link href={{ pathname: "/item", query: { id: itemSummary.itemId } }}><a>{itemSummary.name}</a></Link></td>
+        <td><Link href={{ pathname: "/Item", query: { id: itemSummary.itemId } }} as="/item"><a>{itemSummary.name}</a></Link></td>
         <td>{itemSummary.totalTransactions.toLocaleString()}</td>
         <td>{itemSummary.totalQuantity.toLocaleString()}</td>
         <td>

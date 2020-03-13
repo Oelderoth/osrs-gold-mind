@@ -20,7 +20,7 @@ interface ItemGridProps extends React.ComponentPropsWithoutRef<'div'>{
 function itemRow(item: OsBuddyItemSummary): ReactElement {
     return <tr key={item.id}>
         <td><img className={'item-icon-small'} src={`http://services.runescape.com/m=itemdb_oldschool/obj_sprite.gif?id=${item.id}`} /></td>
-        <td><Link href={{pathname: "/item", query:{id:item.id}}}><a>{item.name}</a></Link></td>
+        <td><Link href={{pathname: "/Item", query:{id:item.id}}} as="/item"><a>{item.name}</a></Link></td>
         <td>{item.overall_average.toLocaleString()}</td>
         <td>{item.sell_average.toLocaleString()}</td>
         <td>{item.buy_average.toLocaleString()}</td>
