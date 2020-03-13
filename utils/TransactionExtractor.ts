@@ -1,34 +1,6 @@
 import { RuneliteGrandExchangeTrade } from 'hooks/useRuneliteSession';
 import { BasicItemTrade, BasicItemTransaction, Transaction } from 'types/Transactions';
 
-const findChunks = (ge:RuneliteGrandExchangeTrade[]): [number, RuneliteGrandExchangeTrade[][]] => {
-    if (ge.length < 2) {
-        return [0, []];
-    }
-    
-    let quantity = 0;
-    // TODO: Allow gaps
-    for (let i = 0; i < ge.length; i++) {
-        let trade = ge[i];
-        if (trade.buy) {
-            quantity -= trade.quantity;
-            if (quantity === 0) {
-                // We've got a match
-                const chunk = ge.slice(0, i+1);
-                const [rCount, rChunks] = findChunks(ge.slice(i+1));
-                return [rCount+1, [chunk, ...rChunks]];
-            }
-        } else {
-            quantity += trade.quantity;
-        }
-    }
-
-    // If we made it to here, it means we found no chunks, so just cut off the first item
-    // And try again
-
-    return findChunks(ge.slice(1));
-}
-
 const buildTransactionsFromChunk = (c: RuneliteGrandExchangeTrade[]): Transaction<BasicItemTrade> => {
     // Find the first unfulfilled buy
     // Iterate through the unfulfilled sells with a timestamp later than the buy, filling them as possible
@@ -108,31 +80,121 @@ const buildTransactionsFromChunk = (c: RuneliteGrandExchangeTrade[]): Transactio
     return new BasicItemTransaction(trades);
 }
 
-const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade>[] => {
-    let processedGe = geHistory.sort((a, b) => b.time.seconds - a.time.seconds);
-    
-    console.log(`\tFinding Chunks`)
-    const [_, chunks] = findChunks(processedGe);
-    console.log(`\tFound ${chunks.length} chunks`, chunks)
-    console.log(`\tFinding Transactions`)
-    const transactions = chunks.map(buildTransactionsFromChunk)
-    console.log(`\tFound ${transactions.length} transactions. Collapsing rogue price checks`)
+/**
+ * Returns null if no chunk exists, or an array containing [chunkStartIndex, chunkSize]
+ */
+const findNextZeroSumTrade = (geHistory: RuneliteGrandExchangeTrade[], startIndex: number = 0, top:boolean = false) : [number, number]|null => {
+    if (geHistory.length - startIndex < 2) {
+        return null;
+    }
 
-    // Collapse price checks into the following transaction
-    const collapsedTransactions = [];
-    for (let i = transactions.length-1; i >=0 ; i--) {
-        const transaction = transactions[i];
-        // If it is a single transaction of a single item
-        if (i > 0 && transaction.trades.length === 1 && transaction.trades[0].quantity === 1) {
-            collapsedTransactions.push(new BasicItemTransaction([...transactions[i-1].trades, ...transaction.trades]))
-            i--;
+    let foundChunk = null;
+    let quantity = 0;
+    for (let i = startIndex; i < geHistory.length; i++) {
+        let trade = geHistory[i];
+
+        if (trade.buy) {
+            quantity -= trade.quantity;
         } else {
-            collapsedTransactions.push(transaction);
+            quantity += trade.quantity;
+        }
+
+        if (quantity === 0) {
+            // We've got a match, mark the chunk and break the loop;
+            foundChunk = [startIndex, i - startIndex + 1];
+            break;
         }
     }
-    console.log(`\tCollapsed into ${collapsedTransactions.length} transactions`)
 
-    return collapsedTransactions;
+    // Recursively check the rest of the list
+    const otherChunk = findNextZeroSumTrade(geHistory, startIndex+1);
+
+    // If we found no chunks, return the other chunk (which may also be null)
+    if (!foundChunk) return otherChunk;
+    // No other match, return our found chunk if any exists
+    if (!otherChunk) return foundChunk;
+
+    // Rturn the one where the latest buy happens before the latest sell
+    const foundSlice = geHistory.slice(foundChunk[0], foundChunk[0] + foundChunk[1]);
+    const otherSlice = geHistory.slice(otherChunk[0], otherChunk[0] + otherChunk[1])
+    const foundLatestSell = foundSlice.filter(t => !t.buy).reduce((acc, cur) => cur.time.seconds > acc ? cur.time.seconds : acc, 0);
+    const foundLatestBuy = foundSlice.filter(t => t.buy).reduce((acc, cur) => cur.time.seconds > acc ? cur.time.seconds : acc, 0);
+    const otherLatestSell = otherSlice.filter(t => !t.buy).reduce((acc, cur) => cur.time.seconds > acc ? cur.time.seconds : acc, 0);
+    const otherLatestBuy = otherSlice.filter(t => t.buy).reduce((acc, cur) => cur.time.seconds > acc ? cur.time.seconds : acc, 0);
+    const foundBuyBeforeSell = foundLatestBuy < foundLatestSell;
+    const otherBuyBeforeSell = otherLatestBuy < otherLatestSell;
+    
+    if (otherBuyBeforeSell && !foundBuyBeforeSell) return otherChunk;
+    if (foundBuyBeforeSell && !otherBuyBeforeSell) return foundChunk;
+
+
+    // If all are in-order, return the shorter one
+    if (otherChunk[1] < foundChunk[1]) return otherChunk;
+    if (foundChunk[1] < otherChunk[1]) return foundChunk;
+
+    // Otherwise return our found chunk because it occurred earlier in the list (ie, later in time)
+    return foundChunk;
+}
+
+const extractTransactionsForItem = (geHistory:RuneliteGrandExchangeTrade[]):Transaction<BasicItemTrade>[] => {
+    /**
+     * 1) Sort trades
+     * 2) Find the next zero-balance chunk, by the following criteria
+     *      2.1) Find the chunk where the latest buy happens before the latest sell
+     *      2.2) If all chunks meet that criteria, find the chunk with the fewest number of trades
+     *      2.3) If multiple chunks have the same number of trades, take the latest chunk
+     * 3) Build the transaction from the chunk
+     * 4) Remove the chunk from the history
+     * 4) Repeat 2-3 until no chunks remain
+     */
+    let remainingGeHistory = geHistory.sort((a, b) => b.time.seconds - a.time.seconds);
+    let transactions: Transaction<BasicItemTrade>[] = [];
+    
+    let nextZeroSumTradeSequence = findNextZeroSumTrade(remainingGeHistory, 0, true);
+    while (nextZeroSumTradeSequence) {
+        const [start, length] = nextZeroSumTradeSequence;
+        const chunk = remainingGeHistory.splice(start, length);
+        transactions.push(buildTransactionsFromChunk(chunk));
+        nextZeroSumTradeSequence = findNextZeroSumTrade(remainingGeHistory, 0, true);
+    }
+
+    // Sort the transactions by end time (and then start time) from earliest to latest so that
+    // we can collapse price checks accurately
+    transactions.sort((a, b) => {
+        if (a.endTime == b.endTime) {
+            return a.startTime - b.startTime;
+        }
+        return a.endTime - b.endTime;
+    });
+
+    // Collapse price checks into the following transaction
+    const collapsableTransactionPredicate = (transaction, i, arr) => {
+        const nextTransaction = i+1 < arr.length ? arr[i+1] : null;
+
+        const transactionQuantity = transaction.trades.reduce((acc, cur) => acc + cur.quantity, 0);
+        const nextTransactionQuantity = nextTransaction?.trades.reduce((acc, cur) => acc + cur.quantity, 0) ?? 0;
+
+        return (transactionQuantity === 1 && nextTransactionQuantity > 1);
+    };
+
+    let nextCollapsablePriceCheckIndex = transactions.findIndex(collapsableTransactionPredicate);
+    while (nextCollapsablePriceCheckIndex != -1) {
+        
+        // Build the collapsed transaction
+        const transaction = transactions[nextCollapsablePriceCheckIndex];
+        const nextTransaction = transactions[nextCollapsablePriceCheckIndex+1];
+        const collapsedTransaction = new BasicItemTransaction([...nextTransaction.trades, ...transaction.trades]);
+
+        // Replace the two collapsed transactions with the new one
+        transactions.splice(nextCollapsablePriceCheckIndex, 2, collapsedTransaction);
+
+        nextCollapsablePriceCheckIndex = transactions.findIndex(collapsableTransactionPredicate);
+    }
+
+    // Sort the final resulting transactions from most to least recent
+    transactions.sort((a, b) => b.endTime - a.endTime);
+
+    return transactions;
 }
 
 export default function extractTransactions(geHistory: RuneliteGrandExchangeTrade[]): Transaction<BasicItemTrade>[] {
@@ -150,7 +212,6 @@ export default function extractTransactions(geHistory: RuneliteGrandExchangeTrad
 
     const matches = [];
     for (let [key, trades] of groupedTrades) {
-        console.log(`Finding matches for ${trades.length} trades of ${key}`)
         matches.push(...extractTransactionsForItem(trades))
     }
 

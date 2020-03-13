@@ -4,8 +4,8 @@ import generateUuid from 'uuid/v4';
 
 import useSessionState from 'hooks/useSessionState';
 
-const RUNELITE_VERSION = '1.6.7';
-const RUNELITE_URL = `https://api.runelite.net/runelite-${RUNELITE_VERSION}`;
+const RUNELITE_VERSION = '1.6.9';
+const RUNELITE_URL = `http://api.runelite.net/runelite-${RUNELITE_VERSION}`;
 const LOGIN_URL = `${RUNELITE_URL}/account/login`;
 const SESSION_CHECK_URL = `${RUNELITE_URL}/account/session-check`;
 const GE_HISTORY_URL = `${RUNELITE_URL}/ge?offset=0`;
