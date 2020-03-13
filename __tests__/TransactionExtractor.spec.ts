@@ -203,19 +203,71 @@ describe('TransactionExtractor', () => {
 
         expect(transactions.length).toBe(2);
 
-        // First transaction is the long one since we sort by start time
+        // Because the short transaction is detected first, the two first price checks
+        // Are rolled into that one since we don't want future transactions
+        // to change previous ones where possible
+        // As a result the short transaction spans from time 0-7000
         expect(transactions[0].startTime).toBe(0);
-        expect(transactions[0].endTime).toBe(9000);
-        expect(transactions[0].buyPrice).toBe(200 + 10000*100 + 180);
-        expect(transactions[0].sellPrice).toBe(99 + 10001*179);
-        expect(transactions[0].trades.reduce((acc, cur) => acc + cur.quantity, 0)).toBe(10002);
+        expect(transactions[0].endTime).toBe(7000);
+        expect(transactions[0].buyPrice).toBe(200 + 90 + 1000*71 + 101);
+        expect(transactions[0].sellPrice).toBe(99 + 70 + 1001*100);
+        expect(transactions[0].trades.reduce((acc, cur) => acc + cur.quantity, 0)).toBe(1000 + 1 + 1 + 1);
 
         expect(transactions[1].startTime).toBe(2000);
-        expect(transactions[1].endTime).toBe(7000);
-        expect(transactions[1].buyPrice).toBe(200 + 10000*100 + 180);
-        expect(transactions[1].sellPrice).toBe(99 + 10001*179);
-        expect(transactions[1].trades.reduce((acc, cur) => acc + cur.quantity, 0)).toBe(10002);
+        expect(transactions[1].endTime).toBe(9000);
+        expect(transactions[1].buyPrice).toBe(10000*100 + 180);
+        expect(transactions[1].sellPrice).toBe(10001*179);
+        expect(transactions[1].trades.reduce((acc, cur) => acc + cur.quantity, 0)).toBe(10000 + 1);
     });
+
+    it('should prefer trades where the sells happen before the buys', () => {
+        const geHistory = [
+            createBuy(TEST_ITEM, 1, 100),
+            createBuy(TEST_ITEM, 1, 100),
+            createBuy(TEST_ITEM, 1, 100),
+            createBuy(TEST_ITEM, 1, 100),
+            createBuy(TEST_ITEM, 1, 100),
+            createBuy(TEST_ITEM, 9995, 100),
+            createSell(TEST_ITEM, 10000, 200),
+            // Later we're doing another trade for the same total quantity but it hasn't sold yet
+            createBuy(TEST_ITEM, 10000, 200)
+        ];
+
+        const transactions = TransactionExtractor(geHistory);
+        transactions.sort((a, b) => a.startTime - b.startTime);
+
+        expect(transactions.length).toBe(1);
+
+        expect(transactions[0].startTime).toBe(0);
+        expect(transactions[0].endTime).toBe(6000);
+        expect(transactions[0].buyPrice).toBe(100*10000);
+        expect(transactions[0].sellPrice).toBe(200*10000);
+        expect(transactions[0].trades.reduce((acc, cur) => acc + cur.quantity, 0)).toBe(10000);
+    });
+
+    // Unfortunately the algorithm to do this winds up being O(2^N) and is to slow to be used
+    // Leaving the test in as a pipe dream in case I figure out a way to do it
+    
+    // it('should extract a transaction that has extra buys in the middle', () => {
+    //     const geHistory = [
+    //         createBuy(TEST_ITEM, 100, 100),
+    //         createBuy(TEST_ITEM, 1, 150),
+    //         createBuy(TEST_ITEM, 3, 150),
+    //         createSell(TEST_ITEM, 100, 200)
+    //     ];
+
+    //     const transactions = TransactionExtractor(geHistory);
+    //     transactions.sort((a, b) => a.startTime - b.startTime);
+
+    //     expect(transactions.length).toBe(1);
+
+    //     expect(transactions[0].startTime).toBe(0);
+    //     expect(transactions[0].endTime).toBe(3000);
+    //     expect(transactions[0].buyPrice).toBe(100 * 100);
+    //     expect(transactions[0].sellPrice).toBe(100 * 200);
+    //     expect(transactions[0].trades.length).toBe(1);
+    //     expect(transactions[0].trades.reduce((acc, cur) => acc + cur.quantity, 0)).toBe(100);
+    // });
 })
 
 const createBuy = (itemId: number, quantity: number, price: number): RuneliteGrandExchangeTrade => createTrade(true, itemId, quantity, price);
