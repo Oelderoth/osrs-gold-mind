@@ -4,11 +4,18 @@ import generateUuid from 'uuid/v4';
 
 import useSessionState from 'hooks/useSessionState';
 
-const RUNELITE_VERSION = '1.6.10.1';
-const RUNELITE_URL = `https://api.runelite.net/runelite-${RUNELITE_VERSION}`;
-const LOGIN_URL = `${RUNELITE_URL}/account/login`;
-const SESSION_CHECK_URL = `${RUNELITE_URL}/account/session-check`;
-const GE_HISTORY_URL = `${RUNELITE_URL}/ge?offset=0`;
+const RUNELITE_URL = `https://api.runelite.net/runelite-`;
+const BOOTSTRAP_URL = 'https://static.runelite.net/bootstrap.json';
+let version = null;
+
+async function getVersion() {
+    let bootstrap = await fetchJsonOrThrow(BOOTSTRAP_URL);
+    return bootstrap.client.version;
+}
+
+function getRuneliteUrl(version: string) {
+    return RUNELITE_URL + version;
+}
 
 export enum RuneliteSessionStatus {
     LOGGED_OUT,
@@ -68,14 +75,14 @@ function initializeRuneliteSession(): RuneliteSession {
     return session;
 }
 
-async function checkRuneliteSession(session: RuneliteSession): Promise<boolean> {
+async function checkRuneliteSession(session: RuneliteSession, version: string): Promise<boolean> {
     if (session.status != RuneliteSessionStatus.LOGGED_IN &&
         session.status !== RuneliteSessionStatus.LOGGING_IN) {
         return false;
     }
     
     try {
-        const response = await fetch(SESSION_CHECK_URL, {
+        const response = await fetch(`${getRuneliteUrl(version)}/account/session-check`, {
             headers: {
                 'RUNELITE-AUTH': session.uuid
             }
@@ -96,8 +103,16 @@ export default function useRuneliteSession(): useRuneliteResult {
         }
     });
 
+    const [v, setVersion] = useSessionState('runelite-version', null);
+
     const login = (async () : Promise<RuneliteSession> => {
-        const sessionIsValid = await checkRuneliteSession(session);
+        let runeliteVersion = v;
+        if (!runeliteVersion) {
+            runeliteVersion = await getVersion();
+            setVersion(runeliteVersion);
+        }
+
+        const sessionIsValid = await checkRuneliteSession(session, runeliteVersion);
 
         if (sessionIsValid) {
             return session;
@@ -105,11 +120,11 @@ export default function useRuneliteSession(): useRuneliteResult {
             const loginSession = session.withStatus(RuneliteSessionStatus.LOGGING_IN);
             setSession(loginSession);
             
-            const loginResponse = await fetchJsonOrThrow(`${LOGIN_URL}?uuid=${loginSession.uuid}`);
+            const loginResponse = await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/account/login?uuid=${loginSession.uuid}`);
             
             try {
                 await openWindow(loginResponse.oauthUrl);
-                const success = await checkRuneliteSession(loginSession);
+                const success = await checkRuneliteSession(loginSession, runeliteVersion);
                 const loggedInSession = loginSession.withStatus(success ? RuneliteSessionStatus.LOGGED_IN : RuneliteSessionStatus.ERROR);
                 setSession(loggedInSession);
                 return loggedInSession;
@@ -140,10 +155,17 @@ export interface RuneliteGrandExchangeTrade {
 
 export function useRuneliteGeHistory(session: RuneliteSession): RuneliteGrandExchangeTrade[] {
     const [history, setHistory] = useState([]);
+    const [version, setVersion] = useSessionState('runelite-version', null);
 
     useEffect(() => {(async () => {
+        let runeliteVersion = version;
+        if (!runeliteVersion) {
+            runeliteVersion = await getVersion();
+            setVersion(runeliteVersion);
+        }
+
         if (session?.status === RuneliteSessionStatus.LOGGED_IN) {
-            setHistory(await fetchJsonOrThrow(GE_HISTORY_URL, {headers:{'RUNELITE-AUTH': session.uuid}}));
+            setHistory(await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/ge?offset=0`, {headers:{'RUNELITE-AUTH': session.uuid}}));
         }
     })()}, [session, session?.status])
 
