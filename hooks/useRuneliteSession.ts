@@ -165,7 +165,18 @@ export function useRuneliteGeHistory(session: RuneliteSession): RuneliteGrandExc
         }
 
         if (session?.status === RuneliteSessionStatus.LOGGED_IN) {
-            setHistory(await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/ge?offset=0`, {headers:{'RUNELITE-AUTH': session.uuid}}));
+            let history = [];
+            
+            let page = await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/ge?offset=0&limit=500`, {headers:{'RUNELITE-AUTH': session.uuid}})
+            let i = 0;
+            while (page.length === 500) {
+                history.push(...page);
+                page = await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/ge?offset=${(i++ * 500)}&limit=500`, {headers:{'RUNELITE-AUTH': session.uuid}})
+            }
+            history.push(...page);
+            
+
+            setHistory(history);
         }
     })()}, [session, session?.status])
 
