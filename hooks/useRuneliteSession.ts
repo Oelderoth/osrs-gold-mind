@@ -165,7 +165,7 @@ export function useRuneliteGeHistory(session: RuneliteSession): RuneliteGrandExc
         }
 
         if (session?.status === RuneliteSessionStatus.LOGGED_IN) {
-            let history = [];
+            let history: RuneliteGrandExchangeTrade[] = [];
             
             let page = await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/ge?offset=0&limit=500`, {headers:{'RUNELITE-AUTH': session.uuid}})
             let i = 0;
@@ -174,7 +174,10 @@ export function useRuneliteGeHistory(session: RuneliteSession): RuneliteGrandExc
                 page = await fetchJsonOrThrow(`${getRuneliteUrl(runeliteVersion)}/ge?offset=${(i++ * 500)}&limit=500`, {headers:{'RUNELITE-AUTH': session.uuid}})
             }
             history.push(...page);
-            
+
+            // Due to some bugs during development bad trade data can exist in the history
+            // so lets filter those out here
+            history = history.filter(trade => trade.price !== 0 && trade.quantity !== 0);
 
             setHistory(history);
         }
